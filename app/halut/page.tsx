@@ -28,7 +28,7 @@ export default function page() {
             </span>
           </div>
 
-          <a href="/login" className="mt-8">
+          <a href="/hal1" className="mt-8">
             <button className="bg-white/80 border-2 border-yellow-600 h-14 w-64 rounded-xl hover:bg-amber-700 transition-all duration-300">
               <p className="text-[#B45A2A] hover:text-white text-xl font-bold font-serif">
                 Jelajahi Lagi
