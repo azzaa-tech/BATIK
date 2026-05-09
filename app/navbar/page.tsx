@@ -1,85 +1,83 @@
 "use client";
-
+import React from "react";
 import Link from "next/link";
-import Image from "next/image";
-import React, { useState } from "react";
-import { ShoppingCart, CircleUserRound, Menu, X } from "lucide-react";
+
+import {
+  Bell,
+  Box,
+  CircleAlert,
+  House,
+  User,
+} from "lucide-react";
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
-
   return (
-    <nav className="w-full absolute top-0 left-0 z-50 flex justify-center pt-5">
-      
-      <div className="w-[85%] h-18 bg-[#D5B13A] rounded-full px-8 py-4 flex items-center justify-between shadow-lg">
+    <>
+      <div className="hidden md:flex fixed top-5 left-1/2 -translate-x-1/2 z-50 w-full justify-center px-5">
 
-        {/* LOGO */}
-        <div className="flex items-center">
-          <Image
-            src="/aset/logo.png"
-            alt="logo"
-            width={120}
-            height={120}
-            className="object-contain"
-          />
+        <div className="w-full h-20 max-w-6xl bg-[#E7BE49]/90 backdrop-blur-sm rounded-full px-7 py-3 flex items-center justify-between shadow-lg">
+
+          <a href="/halut" className="flex items-center">
+            <img
+              src="/aset/asli.PNG"
+              alt="logo" width={60} height={60} className="object-contain"
+            />
+          </a>
+
+          <div className="hidden md:flex items-center gap-14 text-white font-bp text-xl">
+             <a href="#" className="hover:text-yellow-100 hover:scale-105 duration-300 transition">Profil usaha </a> 
+             <a href="#" className="hover:text-yellow-100 hover:scale-105 duration-300transition"> Kontak </a> 
+             <a href="#" className="hover:text-yellow-100 hover:scale-105 duration-300transition"> Produk baru </a> 
+             <a href="#" className="hover:text-yellow-100 hover:scale-105 duration-300transition"> Pelatihan Membatik</a>
+              </div>
+
+          <div className="flex items-center gap-4">
+
+            <Bell
+              className="text-white cursor-pointer hover:text-[#F2B6BE] hover:scale-110 duration-300"
+              size={18}
+            />
+
+            <div className="w-[1px] h-6 bg-white/40"></div>
+
+            <button className="bg-white text-[#5A1520] px-6 py-2 rounded-full text-sm font-semibold hover:scale-105 duration-300">
+              Masuk
+            </button>
+          </div>
         </div>
-
-        {/* MENU DESKTOP */}
-        <div className="hidden md:flex items-center gap-14 text-white font-semibold text-2xl">
-          <Link href="#" className="hover:text-yellow-100 transition">
-            Profil usaha
-          </Link>
-
-          <Link href="#" className="hover:text-yellow-100 transition">
-            Produk
-          </Link>
-
-          <Link href="#" className="hover:text-yellow-100 transition">
-            Produk baru
-          </Link>
-
-          <Link href="#" className="hover:text-yellow-100 transition">
-            Kontak
-          </Link>
-        </div>
-
-        {/* ICON */}
-        <div className="hidden md:flex items-center gap-5 text-white">
-          
-          <ShoppingCart
-            size={32}
-            className="cursor-pointer hover:scale-110 transition"
-          />
-
-          {/* GARIS */}
-          <div className="w-[2px] h-8 bg-white/60 rounded-full"></div>
-
-          <CircleUserRound
-            size={34}
-            className="cursor-pointer hover:scale-110 transition"
-          />
-        </div>
-
-        {/* HAMBURGER */}
-        <button
-          className="md:hidden text-white"
-          onClick={() => setOpen(!open)}
-        >
-          {open ? <X size={35} /> : <Menu size={35} />}
-        </button>
       </div>
 
-      {/* MOBILE MENU */}
-      {open && (
-        <div className="absolute top-24 w-[90%] bg-[#D5B13A] rounded-3xl p-6 flex flex-col gap-5 text-white text-xl font-semibold md:hidden shadow-lg">
-          
-          <Link href="#">Profil usaha</Link>
-          <Link href="#">Produk</Link>
-          <Link href="#">Produk baru</Link>
-          <Link href="#">Kontak</Link>
+      {/* ================= MOBILE NAVBAR ================= */}
+      <div className="md:hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 w-[92%]">
 
+        <div className="bg-[#5A1520]/90 backdrop-blur-sm rounded-full px-6 py-4 flex items-center justify-between shadow-xl">
+
+          <House
+            className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
+            size={22}
+          />
+
+          <Box
+            className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
+            size={22}
+          />
+
+          <CircleAlert
+            className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
+            size={22}
+          />
+
+          <Bell
+            className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
+            size={22}
+          />
+
+          <User
+            className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
+            size={22}
+          />
         </div>
-      )}
-    </nav>
+      </div>
+    </>
   );
 }
