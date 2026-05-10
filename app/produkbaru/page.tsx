@@ -1,12 +1,14 @@
 import React from 'react'
 import Link from "next/link"
+import Navbar from "../navbar/page"
 
 export default function page() {
     return (
         <div>
 
             {/* PRODUK */}
-            <div className="px-4 py-10">
+            <div className="px-4 pb-28 py-10">
+                <Navbar />
 
                 <h2 className="text-center text-[#7b1d1d] font-bold mb-5 text-2xl">
                     Produk Unggulan
@@ -31,6 +33,56 @@ export default function page() {
                             img: "/aset/halu2.jpg",
                         },
                         {
+                            nama: "Tas Batik",
+                            harga: "Rp 150.000",
+                            img: "/aset/produk.png",
+                        },
+                          {
+                            nama: "Tas Batik",
+                            harga: "Rp 150.000",
+                            img: "/aset/produk.png",
+                        },
+                          {
+                            nama: "Tas Batik",
+                            harga: "Rp 150.000",
+                            img: "/aset/produk.png",
+                        },
+                          {
+                            nama: "Tas Batik",
+                            harga: "Rp 150.000",
+                            img: "/aset/produk.png",
+                        },
+                          {
+                            nama: "Tas Batik",
+                            harga: "Rp 150.000",
+                            img: "/aset/produk.png",
+                        },
+                         {
+                            nama: "Batik Lontara",
+                            harga: "Rp 185.000",
+                            img: "/aset/produk.png",
+                        },
+                        {
+                            nama: "Batik Pria",
+                            harga: "Rp 220.000",
+                            img: "/aset/halut.png",
+                        },
+                        {
+                            nama: "Syal Batik",
+                            harga: "Rp 90.000",
+                            img: "/aset/halu2.jpg",
+                        },
+                        {
+                            nama: "Tas Batik",
+                            harga: "Rp 150.000",
+                            img: "/aset/produk.png",
+                        },
+                          {
+                            nama: "Tas Batik",
+                            harga: "Rp 150.000",
+                            img: "/aset/produk.png",
+                        },
+                          {
                             nama: "Tas Batik",
                             harga: "Rp 150.000",
                             img: "/aset/produk.png",

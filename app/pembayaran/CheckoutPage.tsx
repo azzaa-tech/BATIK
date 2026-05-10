@@ -3,7 +3,6 @@
 import { useState, useRef } from "react"
 import Image from "next/image"
 import { FileText, Upload, X } from "lucide-react"
-import Navbar from "../navbar/page"
 
 const banks = [
   { nama: "BCA Virtual Account", norek: "1234-5678-9012" },
@@ -61,13 +60,12 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen pb-28 bg-[#7b1d1d] p-6 font-sans">
-      <Navbar />
+    <div className="min-h-screen bg-[#7b1d1d] p-6 font-sans">
 
-     <div className="max-w-5xl mx-auto flex flex-col lg:flex-row gap-6 items-start">
+      <div className="max-w-5xl mx-auto flex gap-6 flex-wrap items-start">
 
         {/* ===== KIRI - Form ===== */}
-        <div className="flex-1 min-w-[650px] bg-[#f0e8df] rounded-2xl p-6 shadow-lg">
+        <div className="flex-1 min-w-[280px] bg-[#f0e8df] rounded-2xl p-6 shadow-lg">
 
           <div className="mb-6">
             <Image src="/aset/logo.png" alt="logo" width={90} height={45} className="object-contain" />
@@ -124,7 +122,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* ===== KANAN - Pembayaran + Summary ===== */}
-        <div className="w-full lg:flex-1 bg-[#f0e8df] rounded-3xl p-5 md:p-6 shadow-xl">
+        <div className="flex-1 min-w-[280px] bg-[#f0e8df] rounded-2xl p-6 shadow-lg">
 
           <h2 className="text-base font-bold text-[#2d0000] mb-4">Metode Pembayaran</h2>
 

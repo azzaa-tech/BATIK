@@ -4,8 +4,10 @@ import Link from "next/link";
 
 import {
   Bell,
-  Box,
-  CircleAlert,
+  Shirt,
+  Phone,
+  Mail,
+  GraduationCap,
   House,
   User,
 } from "lucide-react";
@@ -13,69 +15,96 @@ import {
 export default function Navbar() {
   return (
     <>
-      <div className="hidden md:flex fixed top-5 left-1/2 -translate-x-1/2 z-50 w-full justify-center px-5">
+      <div className="hidden md:flex fixed top-5 left-1/2 -translate-x-1/2 z-50 mb-20 w-full justify-center px-5">
 
-        <div className="w-full h-20 max-w-6xl bg-[#E7BE49]/90 backdrop-blur-sm rounded-full px-7 py-3 flex items-center justify-between shadow-lg">
+        <div className="w-full h-16 max-w-6xl bg-[#E7BE49]/90 backdrop-blur-sm rounded-full px-7 py-3 flex items-center justify-between shadow-lg">
 
           <a href="/halut" className="flex items-center">
             <img
               src="/aset/asli.PNG"
-              alt="logo" width={60} height={60} className="object-contain"
+              alt="logo"
+              width={60}
+              height={60}
+              className="object-contain"
             />
           </a>
 
           <div className="hidden md:flex items-center gap-14 text-white font-bp text-xl">
-             <a href="#" className="hover:text-yellow-100 hover:scale-105 duration-300 transition">Profil usaha </a> 
-             <a href="#" className="hover:text-yellow-100 hover:scale-105 duration-300transition"> Kontak </a> 
-             <a href="#" className="hover:text-yellow-100 hover:scale-105 duration-300transition"> Produk baru </a> 
-             <a href="#" className="hover:text-yellow-100 hover:scale-105 duration-300transition"> Pelatihan Membatik</a>
-              </div>
+
+            <div className="hidden md:flex items-center gap-14 text-white font-bp text-xl">
+              <a href="/profileus" className="hover:text-yellow-100 hover:scale-105 duration-300 transition">Profil usaha </a>
+              <a href="/kontak" className="hover:text-yellow-100 hover:scale-105 duration-300transition"> Kontak </a>
+              <a href="/produkbaru" className="hover:text-yellow-100 hover:scale-105 duration-300transition"> Produk baru </a>
+              <a href="/booking" className="hover:text-yellow-100 hover:scale-105 duration-300transition"> Pelatihan Membatik</a>
+            </div>
+
+          </div>
 
           <div className="flex items-center gap-4">
 
             <Bell
               className="text-white cursor-pointer hover:text-[#F2B6BE] hover:scale-110 duration-300"
-              size={18}
+              size={20}
             />
 
             <div className="w-[1px] h-6 bg-white/40"></div>
 
-            <button className="bg-white text-[#5A1520] px-6 py-2 rounded-full text-sm font-semibold hover:scale-105 duration-300">
-              Masuk
-            </button>
+            <User
+              className="text-white cursor-pointer hover:text-[#F2B6BE] hover:scale-110 duration-300"
+              size={22}
+            />
+
           </div>
         </div>
       </div>
-
+    
       {/* ================= MOBILE NAVBAR ================= */}
       <div className="md:hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 w-[92%]">
 
-        <div className="bg-[#5A1520]/90 backdrop-blur-sm rounded-full px-6 py-4 flex items-center justify-between shadow-xl">
+        <div className="bg-[#E7BE49]/90 backdrop-blur-sm rounded-full px-6 py-4 flex items-center justify-between shadow-xl">
+          <a href="/halut">
+            <img
+              src="/aset/asli.png"
+              alt="logo"
+              width={45}
+              height={45}
+              className="object-contain"
+            />
+          </a>
 
-          <House
-            className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
-            size={22}
-          />
+          <a href="/hal1" className="flex items-center">
+            <House
+              className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
+              size={22}
+            />
+          </a>
+          <a href="/kontak" className="flex items-center">
+            <Mail
+              className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
+              size={22}
+            />
+          </a>
 
-          <Box
-            className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
-            size={22}
-          />
+          <a href="/produkbaru" className="flex items-center">
+            <Shirt
+              className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
+              size={22}
+            />
+          </a>
 
-          <CircleAlert
-            className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
-            size={22}
-          />
+          <a href="/booking" className="flex items-center">
+            <GraduationCap
+              className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
+              size={22}
+            />
+          </a>
 
-          <Bell
-            className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
-            size={22}
-          />
-
-          <User
-            className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
-            size={22}
-          />
+          <a href="/profileus" className="flex items-center">
+            <User
+              className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
+              size={22}
+            />
+          </a>
         </div>
       </div>
     </>

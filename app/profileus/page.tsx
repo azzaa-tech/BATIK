@@ -4,7 +4,7 @@ import Navbar from "../navbar/page"
 
 export default function ProfilUsaha() {
   return (
-    <div className="min-h-screen bg-[#1a0a00] font-sans text-white px-6 py-12">
+    <div className="min-h-screen pb-28 bg-[#1a0a00] font-sans text-white px-6 py-12">
         <Navbar/>
 
       {/* Judul */}

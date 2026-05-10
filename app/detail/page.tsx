@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Minus, Plus } from "lucide-react"
+import Navbar from "../navbar/page"
 
 export default function ProductDetail() {
 
@@ -9,7 +10,10 @@ export default function ProductDetail() {
   const [size, setSize] = useState("")
 
   return (
-    <div className="min-h-screen bg-[#f5f0eb] p-5 flex justify-center items-center">
+    <div className="min-h-screen bg-[#f5f0eb] pb-28 mp-5 flex justify-center items-center">
+      <Navbar />
+
+       {/* DETAIL PRODUK */}
 
       <div className="bg-[#f0e8df] rounded-3xl p-6 max-w-4xl w-full flex flex-col md:flex-row gap-8 shadow-lg">
 

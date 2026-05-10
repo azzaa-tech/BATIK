@@ -6,11 +6,9 @@ import Navbar from "../navbar/page"
 import Produkbaru from "../produkbaru/page"
 import { useEffect, useState } from "react"
 import {
-  Search,
-  ShoppingBag,
-  CircleUserRound,
   ChevronLeft,
   ChevronRight,
+ 
 } from "lucide-react"
 
 export default function HomePage() {
@@ -43,11 +41,11 @@ export default function HomePage() {
 
 
   return (
-   
-    <div className="min-h-screen bg-[#f5f0eb]">
+
+    <div className="min-h-screen pb-28 bg-[#f5f0eb]">
       <Navbar />
 
-     
+
       {/* HERO */}
       <div className="p-4 mt-28">
 
@@ -119,8 +117,8 @@ export default function HomePage() {
               key={i}
               onClick={() => setCurrent(i)}
               className={`h-2 rounded-full cursor-pointer ${current === i
-                  ? "w-6 bg-[#7b1d1d]"
-                  : "w-2 bg-gray-400"
+                ? "w-6 bg-[#7b1d1d]"
+                : "w-2 bg-gray-400"
                 }`}
             />
           ))}
@@ -131,18 +129,35 @@ export default function HomePage() {
       {/* KATEGORI */}
       <div className="px-4 mt-8 mb-10">
 
-        <h2 className="text-center text-[#7b1d1d] font-bold mb-5">
+        <h2 className="text-center text-[#7b1d1d] font-bold text-4xl mb-10">
           Kategori
         </h2>
 
-        <div className="flex justify-center gap-4 flex-wrap">
+        <div className="flex justify-center gap-10 flex-wrap">
 
-          {["🧣 Syal", "🤵 Pria", "👗 Wanita", "👜 Tas"].map((item, i) => (
+          {[
+            {
+              nama: "Pria",
+              gambar: "/aset/Suit.png",
+            },
+            {
+              nama: "Wanita",
+              gambar: "/aset/dress.png",
+            },
+          ].map((item, i) => (
             <div
               key={i}
-              className="bg-yellow-200 w-24 h-24 rounded-2xl flex items-center justify-center text-center font-semibold hover:scale-105 transition"
+              className="bg-[#F9B82C] w-30 h-30 rounded-2xl flex flex-col items-center justify-center text-center font-semibold hover:scale-105 transition duration-300"
             >
-              {item}
+              <img
+                src={item.gambar}
+                alt={item.nama}
+                className="w-10 h-10 object-contain mb-2"
+              />
+
+              <p className="text-[#7b1d1d] text-sm">
+                {item.nama}
+              </p>
             </div>
           ))}
 

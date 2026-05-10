@@ -8,7 +8,7 @@ export default function Page() {
     <div>
       <Navbar />
 
-      <div className="relative w-full min-h-screen bg-gradient-to-b from-[#691F1E] via-[#7a2625] to-[#4a1413] flex items-center justify-center px-6">
+      <div className="relative w-full min-h-screen pb-28 bg-gradient-to-b from-[#691F1E] via-[#7a2625] to-[#4a1413] flex items-center justify-center px-6">
 
         {/* Overlay */}
         <div className="absolute inset-0 bg-black/20"></div>

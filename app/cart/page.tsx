@@ -9,6 +9,7 @@ import {
   ArrowRight,
   ShoppingBag,
 } from "lucide-react"
+import Navbar from "../navbar/page"
 
 export default function CartPage() {
   const [items, setItems] = useState([
@@ -79,8 +80,9 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#7b1d1d] px-4 py-8 font-['Segoe_UI']">
+    <div className="min-h-screen bg-[#7b1d1d] px-4 py-8 pb-28 font-['Segoe_UI']">
 
+      <Navbar />
       {/* Header */}
       <div className="mx-auto mb-5 flex max-w-[960px] items-center gap-[10px]">
         <ShoppingBag size={22} color="white" />
