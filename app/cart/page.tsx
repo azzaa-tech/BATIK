@@ -80,7 +80,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#7b1d1d] px-4 py-8 pb-28 font-['Segoe_UI']">
+    <div className="min-h-screen bg-[#7b1d1d] pt-28 px-4 py-8 pb-28 font-['Segoe_UI']">
 
       <Navbar />
       {/* Header */}

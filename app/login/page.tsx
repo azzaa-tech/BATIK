@@ -16,7 +16,7 @@ export default function Page() {
         }
 
         // kalau sudah isi baru masuk
-        window.location.href = "/halut"
+        window.location.href = "/hal1"
     }
 
     return (

@@ -61,7 +61,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen pb-28 bg-[#7b1d1d] p-6 font-sans">
+    <div className="min-h-screen pb-28 pt-28 bg-[#7b1d1d] p-6 font-sans">
       <Navbar />
 
      <div className="max-w-5xl mx-auto flex flex-col lg:flex-row gap-6 items-start">

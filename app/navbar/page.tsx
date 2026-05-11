@@ -41,11 +41,12 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-4">
-
-            <Bell
-              className="text-white cursor-pointer hover:text-[#F2B6BE] hover:scale-110 duration-300"
-              size={20}
-            />
+            <a href="/cart">
+              <Bell
+                className="text-white cursor-pointer hover:text-[#F2B6BE] hover:scale-110 duration-300"
+                size={20}
+              />
+            </a>
 
             <div className="w-[1px] h-6 bg-white/40"></div>
 
@@ -57,7 +58,7 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-    
+
       {/* ================= MOBILE NAVBAR ================= */}
       <div className="md:hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 w-[92%]">
 
