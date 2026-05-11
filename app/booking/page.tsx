@@ -2,34 +2,53 @@
 
 import { useState } from "react"
 import { Clock, Users, Wallet, CheckSquare } from "lucide-react"
-import Link from "next/link"
 import Navbar from "../navbar/page"
+import { useRouter } from "next/navigation"
 
 export default function BookingPelatihan() {
 
-  const [form, setForm] = useState({ nama: "", anggota: "", tanggal: "", noWa: "", email: "" })
-  const [errors, setErrors] = useState({})
+  const [form, setForm] = useState({
+    nama: "",
+    anggota: "",
+    tanggal: "",
+    noWa: "",
+    email: ""
+  })
 
-  const fasilitas = ["Ruangan ber-AC", "Perlatan membatik lengkap", "Instruktur berpengalaman", "Snack & Minum"]
+  const [errors, setErrors] = useState<any>({})
+  const router = useRouter()
+
+  const fasilitas = [
+    "Ruangan ber-AC",
+    "Peralatan membatik lengkap",
+    "Instruktur berpengalaman",
+    "Snack & Minum"
+  ]
 
   const handleSubmit = () => {
-    const err = {}
-    if (!form.nama.trim())    err.nama    = "Nama wajib diisi"
+    const err: any = {}
+
+    if (!form.nama.trim()) err.nama = "Nama wajib diisi"
     if (!form.anggota.trim()) err.anggota = "Jumlah anggota wajib diisi"
     if (!form.tanggal.trim()) err.tanggal = "Tanggal wajib diisi"
-    if (!form.noWa.trim())    err.noWa    = "No. WhatsApp wajib diisi"
-    if (!form.email.trim())   err.email   = "Email wajib diisi"
+    if (!form.noWa.trim()) err.noWa = "No. WhatsApp wajib diisi"
+    if (!form.email.trim()) err.email = "Email wajib diisi"
+
     setErrors(err)
-    if (Object.keys(err).length === 0) alert("✅ Booking berhasil dikirim!")
+
+    if (Object.keys(err).length === 0) {
+      router.push("/bookingend")
+    }
   }
 
-  const set = (key) => (e) => {
+
+  const set = (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [key]: e.target.value })
     setErrors({ ...errors, [key]: "" })
   }
 
   return (
-    <div className="min-h-screen bg-[#1a0a00] font-sans text-white pb-28 px-4 py-10">
+    <div className="min-h-screen bg-[#1a0a00] font-sans text-white pb-28 pt-28 px-4 py-10">
       <Navbar />
 
       {/* JUDUL */}
@@ -159,8 +178,10 @@ export default function BookingPelatihan() {
             </div>
 
             <div className="flex justify-end">
-              <button onClick={handleSubmit}
-                className="bg-[#7b1d1d] hover:bg-[#5e1515] text-white font-bold px-10 py-2.5 rounded-lg text-sm transition-colors">
+              <button
+                onClick={handleSubmit}
+                className="bg-[#7b1d1d] hover:bg-[#5e1515] text-white font-bold px-10 py-2.5 rounded-lg text-sm transition-colors"
+              >
                 Seleksi
               </button>
             </div>

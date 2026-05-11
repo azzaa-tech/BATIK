@@ -32,10 +32,22 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-14 text-white font-bp text-xl">
 
             <div className="hidden md:flex items-center gap-14 text-white font-bp text-xl">
-              <a href="/profileus" className="hover:text-yellow-100 hover:scale-105 duration-300 transition">Profil usaha </a>
-              <a href="/kontak" className="hover:text-yellow-100 hover:scale-105 duration-300transition"> Kontak </a>
-              <a href="/produkbaru" className="hover:text-yellow-100 hover:scale-105 duration-300transition"> Produk baru </a>
-              <a href="/booking" className="hover:text-yellow-100 hover:scale-105 duration-300transition"> Pelatihan Membatik</a>
+
+              <a href="#profileus" className="hover:text-yellow-100 transition">
+                Profil usaha
+              </a>
+
+              <a href="#kontak" className="hover:text-yellow-100 transition">
+                Kontak
+              </a>
+
+              <a href="#produkbaru" className="hover:text-yellow-100 transition">
+                Produk
+              </a>
+
+              <a href="/booking" className="hover:text-yellow-100 transition">
+                Pelatihan Membatik
+              </a>
             </div>
 
           </div>

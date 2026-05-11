@@ -4,7 +4,7 @@ import Navbar from "../navbar/page"
 
 export default function ProfilUsaha() {
   return (
-    <div className="min-h-screen pb-28 bg-[#1a0a00] font-sans text-white px-6 py-12">
+    <div className="min-h-screen pb-28 font-sans text-white py-12">
         <Navbar/>
 
       {/* Judul */}
@@ -22,11 +22,11 @@ export default function ProfilUsaha() {
 
         {/* Teks */}
         <div className="flex-1 min-w-[260px]">
-          <h2 className="text-xl md:text-2xl font-bold font-serif mb-3">
+          <h2 className="text-xl md:text-4xl font-bold font-serif mb-3">
             <span className="text-yellow-400">Gallery Batik Lontara</span>{" "}
             <span className="text-white">Merupakan</span>
           </h2>
-          <p className="text-gray-300 text-sm leading-relaxed">
+          <p className="text-gray-300 text-lg leading-relaxed">
             usaha yang bergerak di bidang produksi dan penjualan batik khas Makassar yang berdiri sejak
             tahun 2018. Usaha ini didirikan oleh Ibu Ridha Yamin dengan tujuan melestarikan budaya lokal
             melalui motif aksara lontara yang memiliki nilai filosofis.
@@ -58,7 +58,7 @@ export default function ProfilUsaha() {
 
         {/* Teks */}
         <div className="flex-1 min-w-[260px]">
-          <p className="text-gray-300 text-sm leading-relaxed">
+          <p className="text-gray-300 text-lg leading-relaxed">
             Produk yang ditawarkan meliputi kain batik, pakaian jadi seperti kemeja dan dress, serta
             layanan pembuatan seragam sesuai pesanan. Selain itu, Galeri Batik Lontara juga
             menyediakan pelatihan membatik sebagai bentuk edukasi dan pelestarian budaya.
@@ -69,8 +69,8 @@ export default function ProfilUsaha() {
 
       {/* Tombol */}
       <div className="flex justify-center">
-        <a href="/produk">
-          <button className="bg-yellow-600 hover:bg-yellow-500 text-white font-bold px-10 py-3 rounded-full text-sm transition-colors shadow-lg">
+        <a href="/produkbaru">
+          <button className="bg-yellow-600 hover:bg-yellow-500  text-white font-bold px-10 py-3 rounded-full text-sm transition-colors shadow-lg">
             Lihat Produk Kami →
           </button>
         </a>

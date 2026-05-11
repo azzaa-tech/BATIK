@@ -7,11 +7,11 @@ export default function page() {
         <div>
 
             {/* PRODUK */}
-            <div className="px-4 pb-28 py-10">
+            <div className="px-4 mt-20 py-10 ">
                 <Navbar />
 
                 <h2 className="text-center text-[#7b1d1d] font-bold mb-5 text-2xl">
-                    Produk Unggulan
+                    Produk
                 </h2>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

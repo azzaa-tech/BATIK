@@ -63,8 +63,9 @@ export default function Sidebar() {
               w-full flex items-center gap-3
               px-4 py-3 rounded-xl
               text-sm font-medium
-              text-white bg-white/15
-              hover:bg-white/20
+              text-white/70
+              hover:bg-white/10
+              hover:text-white
               transition-all
             "
           >
@@ -89,7 +90,7 @@ export default function Sidebar() {
           </Link>
 
           <Link
-            href="/admintam"
+            href="/adminpesanan"
             className="
               w-full flex items-center gap-3
               px-4 py-3 rounded-xl

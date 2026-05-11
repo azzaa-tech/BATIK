@@ -4,11 +4,14 @@ import Image from "next/image"
 import React from "react"
 import Navbar from "../navbar/page"
 import Produkbaru from "../produkbaru/page"
+import Link from "next/link"
+import Profileus from "../profileus/page"
+import Kontak from "../kontak/page"
 import { useEffect, useState } from "react"
 import {
   ChevronLeft,
   ChevronRight,
- 
+
 } from "lucide-react"
 
 export default function HomePage() {
@@ -42,11 +45,11 @@ export default function HomePage() {
 
   return (
 
-    <div className="min-h-screen pb-28 bg-[#f5f0eb]">
+    <div className="min-h-screen pb-28 bg-gradient-to-b from-[#f6e7d0] via-[#d6b48a] to-[#8b5e3c]">
       <Navbar />
 
 
-      {/* HERO */}
+      {/* main */}
       <div className="p-4 mt-28">
 
         <div className="relative overflow-hidden rounded-2xl">
@@ -126,44 +129,20 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* KATEGORI */}
-      <div className="px-4 mt-8 mb-10">
 
-        <h2 className="text-center text-[#7b1d1d] font-bold text-4xl mb-10">
-          Kategori
-        </h2>
-
-        <div className="flex justify-center gap-10 flex-wrap">
-
-          {[
-            {
-              nama: "Pria",
-              gambar: "/aset/Suit.png",
-            },
-            {
-              nama: "Wanita",
-              gambar: "/aset/dress.png",
-            },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className="bg-[#F9B82C] w-30 h-30 rounded-2xl flex flex-col items-center justify-center text-center font-semibold hover:scale-105 transition duration-300"
-            >
-              <img
-                src={item.gambar}
-                alt={item.nama}
-                className="w-10 h-10 object-contain mb-2"
-              />
-
-              <p className="text-[#7b1d1d] text-sm">
-                {item.nama}
-              </p>
-            </div>
-          ))}
-
-        </div>
+      <div id="produkbaru" className="scroll-mt-10">
+        <Produkbaru />
       </div>
-      <Produkbaru />
+
+      <div id="profileus" className="scroll-mt-10">
+        <Profileus />
+      </div>
+
+      <div id="kontak" className="scroll-mt-10">
+        <Kontak />
+      </div>
+
+
 
     </div>
   )

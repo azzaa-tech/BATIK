@@ -81,10 +81,13 @@ const statusIcon: Record<string, string> = {
 
 export default function Page() {
   return (
-    <>
+    <div className="min-h-screen bg-gray-50 flex font-sans">
+
+      {/* SIDEBAR */}
       <Sidebar />
 
-      <div className="min-h-screen bg-gray-50 p-6 md:ml-64">
+      {/* CONTENT */}
+      <div className="flex-1 p-6 md:ml-64">
 
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -102,20 +105,28 @@ export default function Page() {
           <div className="flex items-center gap-3">
 
             <div className="relative">
-              <span className="text-xl">🔔</span>
 
-              <span className="
-                absolute -top-1 -right-1
-                w-2 h-2 bg-red-500 rounded-full
-              " />
+              <span className="text-xl">
+                🔔
+              </span>
+
+              <span
+                className="
+                  absolute -top-1 -right-1
+                  w-2 h-2 bg-red-500 rounded-full
+                "
+              />
+
             </div>
 
-            <div className="
-              w-8 h-8 rounded-full
-              bg-orange-500
-              flex items-center justify-center
-              text-white font-bold text-sm
-            ">
+            <div
+              className="
+                w-8 h-8 rounded-full
+                bg-orange-500
+                flex items-center justify-center
+                text-white font-bold text-sm
+              "
+            >
               A
             </div>
 
@@ -124,12 +135,14 @@ export default function Page() {
         </div>
 
         {/* Cards */}
-        <div className="
-          grid grid-cols-1
-          sm:grid-cols-2
-          lg:grid-cols-4
-          gap-4 mb-6
-        ">
+        <div
+          className="
+            grid grid-cols-1
+            sm:grid-cols-2
+            lg:grid-cols-4
+            gap-4 mb-6
+          "
+        >
 
           {stats.map((s) => (
             <div
@@ -147,9 +160,10 @@ export default function Page() {
                   className={`
                     text-xs font-semibold
                     px-2 py-0.5 rounded-full
-                    ${s.positive
-                      ? "bg-green-100 text-green-600"
-                      : "bg-red-100 text-red-500"
+                    ${
+                      s.positive
+                        ? "bg-green-100 text-green-600"
+                        : "bg-red-100 text-red-500"
                     }
                   `}
                 >
@@ -172,7 +186,7 @@ export default function Page() {
         </div>
 
         {/* Recent Orders */}
-        <div className="bg-white rounded-2xl shadow-sm p-5 mb-6">
+        <div className="bg-white rounded-2xl shadow-sm p-5 mb-6 overflow-x-auto">
 
           <div className="flex items-center justify-between mb-4">
 
@@ -186,16 +200,34 @@ export default function Page() {
 
           </div>
 
-          <table className="w-full text-sm">
+          <table className="w-full text-sm min-w-[600px]">
 
             <thead>
+
               <tr className="text-gray-400 text-left border-b border-gray-100">
-                <th className="pb-2 font-medium">ID</th>
-                <th className="pb-2 font-medium">Pelanggan</th>
-                <th className="pb-2 font-medium">Produk</th>
-                <th className="pb-2 font-medium">Total</th>
-                <th className="pb-2 font-medium">Status</th>
+
+                <th className="pb-2 font-medium">
+                  ID
+                </th>
+
+                <th className="pb-2 font-medium">
+                  Pelanggan
+                </th>
+
+                <th className="pb-2 font-medium">
+                  Produk
+                </th>
+
+                <th className="pb-2 font-medium">
+                  Total
+                </th>
+
+                <th className="pb-2 font-medium">
+                  Status
+                </th>
+
               </tr>
+
             </thead>
 
             <tbody>
@@ -223,6 +255,7 @@ export default function Page() {
                   </td>
 
                   <td className="py-3">
+
                     <span
                       className={`
                         inline-flex items-center gap-1
@@ -233,6 +266,7 @@ export default function Page() {
                     >
                       {statusIcon[o.status]} {o.status}
                     </span>
+
                   </td>
 
                 </tr>
@@ -267,9 +301,10 @@ export default function Page() {
                   className={`
                     text-xs font-semibold
                     px-2.5 py-1 rounded-full
-                    ${item.danger
-                      ? "bg-red-100 text-red-500"
-                      : "bg-yellow-100 text-yellow-600"
+                    ${
+                      item.danger
+                        ? "bg-red-100 text-red-500"
+                        : "bg-yellow-100 text-yellow-600"
                     }
                   `}
                 >
@@ -284,6 +319,7 @@ export default function Page() {
         </div>
 
       </div>
-    </>
+
+    </div>
   )
 }

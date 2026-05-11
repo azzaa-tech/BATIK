@@ -45,12 +45,43 @@ export default function PesananTerbaru() {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm p-6 md:ml-64 p-5 w-full">
-        <Sidebar />
+    <div className="bg-white rounded-2xl shadow-sm p-6 md:ml-64 w-full">
+      <Sidebar />
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="font-semibold text-gray-800">Pesanan Terbaru</h2>
-        <button className="text-sm text-orange-500 hover:underline">Lihat semua</button>
+      <div className="flex items-center justify-between mb-6">
+
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">
+            Dashboard
+          </h1>
+
+          <p className="text-sm text-gray-500">
+            Selamat datang, Admin 👋
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+
+          <div className="relative">
+            <span className="text-xl">🔔</span>
+
+            <span className="
+                absolute -top-1 -right-1
+                w-2 h-2 bg-red-500 rounded-full
+              " />
+          </div>
+
+          <div className="
+              w-8 h-8 rounded-full
+              bg-orange-500
+              flex items-center justify-center
+              text-white font-bold text-sm
+            ">
+            A
+          </div>
+
+        </div>
+
       </div>
 
       {/* Table */}
@@ -90,9 +121,8 @@ export default function PesananTerbaru() {
                       <button
                         key={opt}
                         onClick={() => handleStatusChange(o.id, opt)}
-                        className={`w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-gray-50 transition-colors ${
-                          o.status === opt ? "font-semibold" : "text-gray-600"
-                        }`}
+                        className={`w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-gray-50 transition-colors ${o.status === opt ? "font-semibold" : "text-gray-600"
+                          }`}
                       >
                         <span
                           className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full ${statusStyle[opt]}`}
