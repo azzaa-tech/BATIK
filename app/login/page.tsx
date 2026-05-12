@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from "next/navigation"
 
 export default function Page() {
 
@@ -18,6 +19,7 @@ export default function Page() {
         // kalau sudah isi baru masuk
         window.location.href = "/hal1"
     }
+    const router = useRouter()
 
     return (
         <div className="w-full h-screen bg-gradient-to-b from-[#691F1E] via-[#7a2625] to-[#4a1413]">
@@ -63,17 +65,22 @@ export default function Page() {
                     {/* Links */}
                     <div className="flex justify-between text-sm mt-2 mb-6">
                         <p>
-                            No Account ?{" "}
-                            <span className="text-orange-500 cursor-pointer">
+                            No Account?{" "}
+                            <span
+                                className="text-orange-500 cursor-pointer hover:underline"
+                                onClick={() => router.push("/signup")}
+                            >
                                 Sign up
                             </span>
                         </p>
 
-                        <p className="text-orange-500 cursor-pointer">
+                        <span
+                            className="text-orange-500 cursor-pointer hover:underline"
+                            onClick={() => router.push("/forgot-password")}
+                        >
                             Forgot Password
-                        </p>
+                        </span>
                     </div>
-
                     {/* Button */}
                     <button
                         onClick={handleLogin}

@@ -1,36 +1,17 @@
 "use client"
 
-import Image from "next/image"
-import React from "react"
+import React, { useState, useEffect } from "react"
 import Navbar from "../navbar/page"
 import Produkbaru from "../produkbaru/page"
-import Link from "next/link"
 import Profileus from "../profileus/page"
 import Kontak from "../kontak/page"
-import { useEffect, useState } from "react"
-import {
-  ChevronLeft,
-  ChevronRight,
-
-} from "lucide-react"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 
 export default function HomePage() {
   const slides = [
-    {
-      image: "/aset/halut.png",
-      title: "Batik Modern",
-      desc: "Motif khas Sulawesi Selatan.",
-    },
-    {
-      image: "/aset/halu2.jpg",
-      title: "Fashion Pria",
-      desc: "Cocok untuk acara formal.",
-    },
-    {
-      image: "/aset/produk.png",
-      title: "Produk Lokal",
-      desc: "Karya asli pengerajin lokal.",
-    },
+    { image: "/aset/halut.png", title: "BATIK LONTARA", sub: "Koleksi Eksklusif 2025" },
+    { image: "/aset/halu2.jpg", title: "FASHION PRIA", sub: "Elegan untuk Setiap Momen" },
+    { image: "/aset/produk.png", title: "KARYA LOKAL", sub: "Motif Aksara Sulawesi Selatan" },
   ]
 
   const [current, setCurrent] = useState(0)
@@ -38,112 +19,88 @@ export default function HomePage() {
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slides.length)
     }, 20000)
-
     return () => clearInterval(timer)
   }, [])
 
-
   return (
+    <>
+      <div className="w-full h-screen overflow-hidden font-sans relative">
+        <Navbar />
 
-    <div className="min-h-screen pb-28 bg-gradient-to-b from-[#f6e7d0] via-[#d6b48a] to-[#8b5e3c]">
-      <Navbar />
-
-
-      {/* main */}
-      <div className="p-4 mt-28">
-
-        <div className="relative overflow-hidden rounded-2xl">
-
+        {/* HERO SLIDER fullscreen */}
+        <div className="relative w-full h-full">
+          {/* Slides */}
           <div
-            className="flex duration-500"
-            style={{
-              transform: `translateX(-${current * 100}%)`
-            }}
+            className="flex h-full transition-transform duration-700 ease-in-out"
+            style={{ transform: `translateX(-${current * 100}%)` }}
           >
             {slides.map((slide, i) => (
-              <div
-                key={i}
-                className="min-w-full h-[400px] relative"
-              >
-                <img
-                  src={slide.image}
-                  alt={slide.title}
-                  className="w-full h-full object-cover"
-                />
+              <div key={i} className="min-w-full h-full relative">
+                <img src={slide.image} alt={slide.title} className="w-full h-full object-cover" />
 
-                <div className="absolute inset-0 bg-black/40 flex items-center px-20">
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/20 to-transparent" />
 
-                  <div className="text-white">
-                    <h1 className="text-4xl font-sans font-extrabold mb-3">
+                {/* Teks */}
+                <div className="absolute inset-0 flex items-center px-8 md:px-24">
+                  <div className="text-white max-w-xl">
+                    <p className="text-xs tracking-[0.4em] uppercase mb-3 opacity-75">{slide.sub}</p>
+                    <h1 className="text-4xl md:text-7xl font-serif font-bold tracking-widest leading-none mb-6">
                       {slide.title}
                     </h1>
-
-                    <p className="text-sm mb-4">
-                      {slide.desc}
-                    </p>
-
-                    <button className="bg-yellow-500 px-5 py-2 rounded-lg text-sm font-semibold hover:bg-yellow-600">
-                      Lihat Koleksi
-                    </button>
+                    <a href="/produk">
+                      <button className="border border-white text-white text-xs font-bold tracking-widest px-8 py-3 hover:bg-white hover:text-[#7b1d1d] transition-all duration-300">
+                        LIHAT KOLEKSI
+                      </button>
+                    </a>
                   </div>
-
                 </div>
               </div>
             ))}
           </div>
 
-          {/* BUTTON */}
+          {/* Prev / Next */}
           <button
-            onClick={() =>
-              setCurrent((current - 1 + slides.length) % slides.length)
-            }
-            className="absolute left-3 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full"
+            onClick={() => setCurrent((p) => (p - 1 + slides.length) % slides.length)}
+            className="absolute left-5 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full flex items-center justify-center transition-all"
           >
-            <ChevronLeft size={18} />
+            <ChevronLeft size={20} color="white" />
+          </button>
+          <button
+            onClick={() => setCurrent((p) => (p + 1) % slides.length)}
+            className="absolute right-5 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full flex items-center justify-center transition-all"
+          >
+            <ChevronRight size={20} color="white" />
           </button>
 
-          <button
-            onClick={() =>
-              setCurrent((current + 1) % slides.length)
-            }
-            className="absolute right-3 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full"
-          >
-            <ChevronRight size={18} />
-          </button>
-        </div>
+          {/* Dots */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                className={`rounded-full transition-all duration-300 ${i === current ? "w-8 h-2 bg-white" : "w-2 h-2 bg-white/40"}`}
+              />
+            ))}
+          </div>
 
-        {/* DOTS */}
-        <div className="flex justify-center gap-2 mt-4">
-
-          {slides.map((_, i) => (
-            <div
-              key={i}
-              onClick={() => setCurrent(i)}
-              className={`h-2 rounded-full cursor-pointer ${current === i
-                ? "w-6 bg-[#7b1d1d]"
-                : "w-2 bg-gray-400"
-                }`}
-            />
-          ))}
-
+          {/* Nomor slide */}
+          <div className="absolute bottom-8 right-8 text-white/60 text-xs font-mono">
+            {String(current + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
+          </div>
         </div>
       </div>
 
-
-      <div id="produkbaru" className="scroll-mt-10">
+      {/* Sections */}
+      <div id="produkbaru" className="scroll-mt-10 relative z-10">
         <Produkbaru />
       </div>
-
-      <div id="profileus" className="scroll-mt-10">
+      <div id="profileus" className="scroll-mt-10 relative z-10">
         <Profileus />
       </div>
-
-      <div id="kontak" className="scroll-mt-10">
+      <div id="kontak" className="scroll-mt-10 relative z-10">
         <Kontak />
       </div>
-
-
-
-    </div>
+    </>
   )
 }

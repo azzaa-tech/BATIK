@@ -36,8 +36,8 @@ export default function HeroPage() {
 
         {/* Tombol */}
         <div>
-          <a href="/adminuser">
-            <button className="border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-[#2d0000] font-semibold px-8 py-3 rounded-full text-sm transition-all duration-300">
+          <a href="/hal1">
+            <button className="border bg-white/70 border-yellow-400 text-[#B45A2A] hover:bg-yellow-400 hover:text-[#2d0000] font-semibold px-8 py-3 rounded-full text-sm transition-all duration-300">
               Jelajahi Lagi
             </button>
           </a>

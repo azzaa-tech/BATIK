@@ -17,7 +17,7 @@ export default function Navbar() {
     <>
       <div className="hidden md:flex fixed top-5 left-1/2 -translate-x-1/2 z-50 mb-20 w-full justify-center px-5">
 
-        <div className="w-full h-16 max-w-6xl bg-[#E7BE49]/90 backdrop-blur-sm rounded-full px-7 py-3 flex items-center justify-between shadow-lg">
+        <div className="w-full h-16 max-w-6xl bg-[#703312]/90 backdrop-blur-sm rounded-full px-7 py-3 flex items-center justify-between shadow-lg">
 
           <a href="/halut" className="flex items-center">
             <img
