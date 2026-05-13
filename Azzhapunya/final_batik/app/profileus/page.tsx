@@ -61,9 +61,9 @@ export default function ProfilUsaha() {
 
         {/* TOMBOL */}
         <div className="flex justify-center pb-4">
-          <a href="/produkbaru">
+          <a href="/booking">
             <button className="bg-yellow-600 hover:bg-yellow-500 text-white font-bold px-8 py-3 rounded-full text-sm transition-colors shadow-md">
-              Lihat Produk Kami →
+              Ayok membatik →
             </button>
           </a>
         </div>

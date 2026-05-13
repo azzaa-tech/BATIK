@@ -6,9 +6,9 @@ import Link from "next/link"
 import {
   LayoutDashboard,
   ShoppingBag,
-  Users,
-  BookOpen,
   Package,
+  BookOpen,
+  BadgeCheck,
   LogOut,
 } from "lucide-react"
 
@@ -35,23 +35,19 @@ export default function Sidebar() {
 
         {/* Logo */}
         <div className="flex items-center gap-3 px-6 py-5 border-b border-white/10">
-
           <img
-            src="/aset/logo.png"
+            src="/aset/asli.png"
             alt="logo"
             className="w-10 h-10 object-contain"
           />
-
           <div>
             <p className="text-white font-bold text-sm">
               Galleri Batik
             </p>
-
             <p className="text-yellow-300 text-xs">
               Lontara · Admin
             </p>
           </div>
-
         </div>
 
         {/* Menu */}
@@ -62,7 +58,7 @@ export default function Sidebar() {
             className="
               w-full flex items-center gap-3
               px-4 py-3 rounded-xl
-              text-sm font-medium
+              text-lg font-medium
               text-white/70
               hover:bg-white/10
               hover:text-white
@@ -76,9 +72,9 @@ export default function Sidebar() {
           <Link
             href="/adminpers"
             className="
-              w-full flex items-center gap-3
+               w-full flex items-center gap-3
               px-4 py-3 rounded-xl
-              text-sm font-medium
+              text-lg font-medium
               text-white/70
               hover:bg-white/10
               hover:text-white
@@ -92,9 +88,9 @@ export default function Sidebar() {
           <Link
             href="/adminpesanan"
             className="
-              w-full flex items-center gap-3
+               w-full flex items-center gap-3
               px-4 py-3 rounded-xl
-              text-sm font-medium
+              text-lg font-medium
               text-white/70
               hover:bg-white/10
               hover:text-white
@@ -108,9 +104,9 @@ export default function Sidebar() {
           <Link
             href="/adminbook"
             className="
-              w-full flex items-center gap-3
+               w-full flex items-center gap-3
               px-4 py-3 rounded-xl
-              text-sm font-medium
+              text-lg font-medium
               text-white/70
               hover:bg-white/10
               hover:text-white
@@ -122,31 +118,30 @@ export default function Sidebar() {
           </Link>
 
           <Link
-            href="/adminpelang"
+            href="/adminkonfirm"
             className="
-              w-full flex items-center gap-3
+               w-full flex items-center gap-3
               px-4 py-3 rounded-xl
-              text-sm font-medium
+              text-lg font-medium
               text-white/70
               hover:bg-white/10
               hover:text-white
               transition-all
             "
           >
-            <Users size={18} />
-            Pelanggan
+            <BadgeCheck size={18} />
+            Konfirmasi Pembayaran
           </Link>
 
         </nav>
 
         {/* Logout */}
         <div className="px-3 py-4 border-t border-white/10">
-
           <button
             className="
               w-full flex items-center gap-3
               px-4 py-3 rounded-xl
-              text-sm text-white/70
+              text-lg text-white/70
               hover:bg-white/10
               hover:text-white
               transition-all
@@ -155,7 +150,6 @@ export default function Sidebar() {
             <LogOut size={18} />
             Keluar
           </button>
-
         </div>
 
       </aside>
