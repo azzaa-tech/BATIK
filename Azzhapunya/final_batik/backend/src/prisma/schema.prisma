@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  nama      String
+  email     String    @unique
+  password  String
+  noWa      String?
+  role      String    @default("user")
+  createdAt DateTime  @default(now())
+  orders    Order[]
+  bookings  Booking[]
+  cart      Cart[]
+}
+
+model Product {
+  id         Int         @id @default(autoincrement())
+  nama       String
+  deskripsi  String
+  harga      Int
+  stok       Int
+  kategori   String
+  gambar     String
+  createdAt  DateTime    @default(now())
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int
+  user      User       @relation(fields: [userId], references: [id])
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+}
+
+model CartItem {
+  id        Int     @id @default(autoincrement())
+  cartId    Int
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  qty       Int
+  size      String
+}
+
+model Order {
+  id                Int         @id @default(autoincrement())
+  userId            Int
+  user              User        @relation(fields: [userId], references: [id])
+  namaPenerima      String
+  alamat            String
+  telpon            String
+  catatan           String?
+  metodePembayaran  String
+  subtotal          Int
+  ongkir            Int
+  total             Int
+  buktiTransaksi    String
+  status            String      @default("pending")
+  createdAt         DateTime    @default(now())
+  items             OrderItem[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  qty       Int
+  size      String
+  harga     Int
+}
+
+model Booking {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id])
+  nama      String
+  anggota   Int
+  tanggal   DateTime
+  noWa      String
+  email     String
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+}
+
+model PromoCode {
+  id     Int     @id @default(autoincrement())
+  kode   String  @unique
+  diskon Float
+  aktif  Boolean @default(true)
+}
