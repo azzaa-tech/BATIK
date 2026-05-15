@@ -53,7 +53,7 @@ export default function HomePage() {
                   <h1 className="text-2xl sm:text-4xl md:text-7xl font-serif font-bold tracking-widest leading-snug mb-4 sm:mb-6 text-white">
                     {slide.title}
                   </h1>
-                  <a href="/produk">
+                  <a href="/detail">
                     <button className="border border-white text-white text-xs sm:text-sm font-bold tracking-widest px-6 sm:px-8 py-2 sm:py-3 hover:bg-white hover:text-[#7b1d1d] transition-all duration-300">
                       LIHAT KOLEKSI
                     </button>

@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useRef } from "react"
-import Image from "next/image"
 import { FileText, Upload, X, Copy, Check, Truck } from "lucide-react"
+import { useRouter } from "next/navigation"
 import Navbar from "../navbar/page"
 
 const banks = [
@@ -20,6 +20,7 @@ const ekspedisi = [
 ]
 
 export default function CheckoutPage() {
+  const router = useRouter()
 
   const [form, setForm] = useState({ nama: "", alamat: "", telpon: "", catatan: "" })
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -28,8 +29,8 @@ export default function CheckoutPage() {
   const [ekspedisiDipilih, setEkspedisiDipilih] = useState<string | null>(null)
   const [copied, setCopied] = useState<number | null>(null)
 
-  // Bukti transaksi
   const [showModal, setShowModal] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
   const [foto, setFoto] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -38,6 +39,7 @@ export default function CheckoutPage() {
   const ongkir = ekspedisiDipilih
     ? ekspedisi.find((e) => e.id === ekspedisiDipilih)!.ongkir
     : 0
+
   const total = subtotal + ongkir
   const format = (n: number) => "Rp" + n.toLocaleString("id-ID")
 
@@ -62,17 +64,22 @@ export default function CheckoutPage() {
 
   const handleCheckout = () => {
     const newErrors: Record<string, string> = {}
-    if (!form.nama.trim())        newErrors.nama       = "Nama penerima wajib diisi"
-    if (!form.alamat.trim())      newErrors.alamat     = "Alamat wajib diisi"
-    if (!form.telpon.trim())      newErrors.telpon     = "No. Telepon wajib diisi"
-    if (!ekspedisiDipilih)        newErrors.ekspedisi  = "Pilih ekspedisi pengiriman dulu"
-    if (metodeDipilih === null)   newErrors.metode     = "Pilih metode pembayaran dulu"
-    if (!foto)                    newErrors.foto       = "Upload bukti transaksi dulu"
+
+    if (!form.nama.trim()) newErrors.nama = "Nama penerima wajib diisi"
+    if (!form.alamat.trim()) newErrors.alamat = "Alamat wajib diisi"
+    if (!form.telpon.trim()) newErrors.telpon = "No. Telepon wajib diisi"
+    if (!ekspedisiDipilih) newErrors.ekspedisi = "Pilih ekspedisi pengiriman dulu"
+    if (metodeDipilih === null) newErrors.metode = "Pilih metode pembayaran dulu"
+    if (!foto) newErrors.foto = "Upload bukti transaksi dulu"
 
     setErrors(newErrors)
 
     if (Object.keys(newErrors).length === 0) {
-      alert("✅ Pesanan berhasil dikonfirmasi!")
+      setShowSuccess(true)
+
+      setTimeout(() => {
+        router.push("")
+      }, 2200)
     }
   }
 
@@ -81,90 +88,125 @@ export default function CheckoutPage() {
       <Navbar />
 
       <div className="max-w-5xl mx-auto flex flex-col lg:flex-row gap-6 items-start">
-
-        {/* ===== KIRI - Form ===== */}
         <div className="flex-1 min-w-0 lg:min-w-[400px] bg-[#f0e8df] rounded-2xl p-6 shadow-lg">
-
           <div className="mb-4">
-            <label className="block text-base font-semibold text-[#2d0000] mb-1">Nama Penerima</label>
-            <input type="text" value={form.nama}
-              onChange={(e) => { setForm({ ...form, nama: e.target.value }); setErrors({ ...errors, nama: "" }) }}
-              className={`w-full border rounded-lg px-4 py-2.5 text-sm outline-none bg-white ${errors.nama ? "border-red-400" : "border-gray-300 focus:border-[#7b1d1d]"}`}
-              placeholder="Masukkan nama penerima" />
+            <label className="block text-base font-semibold text-[#2d0000] mb-1">
+              Nama Penerima
+            </label>
+            <input
+              type="text"
+              value={form.nama}
+              onChange={(e) => {
+                setForm({ ...form, nama: e.target.value })
+                setErrors({ ...errors, nama: "" })
+              }}
+              className={`w-full border rounded-lg px-4 py-2.5 text-sm outline-none bg-white ${errors.nama ? "border-red-400" : "border-gray-300 focus:border-[#7b1d1d]"
+                }`}
+              placeholder="Masukkan nama penerima"
+            />
             {errors.nama && <p className="text-red-500 text-xs mt-1">⚠ {errors.nama}</p>}
           </div>
 
           <div className="mb-4">
-            <label className="block text-base font-semibold text-[#2d0000] mb-1">Alamat</label>
-            <input type="text" value={form.alamat}
-              onChange={(e) => { setForm({ ...form, alamat: e.target.value }); setErrors({ ...errors, alamat: "" }) }}
-              className={`w-full border rounded-lg px-4 py-2.5 text-sm outline-none bg-white ${errors.alamat ? "border-red-400" : "border-gray-300 focus:border-[#7b1d1d]"}`}
-              placeholder="Masukkan alamat lengkap" />
+            <label className="block text-base font-semibold text-[#2d0000] mb-1">
+              Alamat
+            </label>
+            <input
+              type="text"
+              value={form.alamat}
+              onChange={(e) => {
+                setForm({ ...form, alamat: e.target.value })
+                setErrors({ ...errors, alamat: "" })
+              }}
+              className={`w-full border rounded-lg px-4 py-2.5 text-sm outline-none bg-white ${errors.alamat ? "border-red-400" : "border-gray-300 focus:border-[#7b1d1d]"
+                }`}
+              placeholder="Masukkan alamat lengkap"
+            />
             {errors.alamat && <p className="text-red-500 text-xs mt-1">⚠ {errors.alamat}</p>}
           </div>
 
           <div className="mb-4">
-            <label className="block text-base font-semibold text-[#2d0000] mb-1">No. Telepon</label>
-            <input type="tel" value={form.telpon}
-              onChange={(e) => { setForm({ ...form, telpon: e.target.value }); setErrors({ ...errors, telpon: "" }) }}
-              className={`w-full border rounded-lg px-4 py-2.5 text-sm outline-none bg-white ${errors.telpon ? "border-red-400" : "border-gray-300 focus:border-[#7b1d1d]"}`}
-              placeholder="08xxxxxxxxxx" />
+            <label className="block text-base font-semibold text-[#2d0000] mb-1">
+              No. Telepon
+            </label>
+            <input
+              type="tel"
+              value={form.telpon}
+              onChange={(e) => {
+                setForm({ ...form, telpon: e.target.value })
+                setErrors({ ...errors, telpon: "" })
+              }}
+              className={`w-full border rounded-lg px-4 py-2.5 text-sm outline-none bg-white ${errors.telpon ? "border-red-400" : "border-gray-300 focus:border-[#7b1d1d]"
+                }`}
+              placeholder="08xxxxxxxxxx"
+            />
             {errors.telpon && <p className="text-red-500 text-xs mt-1">⚠ {errors.telpon}</p>}
           </div>
 
           <div className="mb-6">
             <label className="block text-base font-semibold text-[#2d0000] mb-1">
-              Catatan Untuk Kurir <span className="font-normal text-gray-400">(Opsional)</span>
+              Catatan Untuk Kurir{" "}
+              <span className="font-normal text-gray-400">(Opsional)</span>
             </label>
-            <input type="text" value={form.catatan}
+            <input
+              type="text"
+              value={form.catatan}
               onChange={(e) => setForm({ ...form, catatan: e.target.value })}
               className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[#7b1d1d] bg-white"
-              placeholder="Contoh: titip di depan pintu" />
+              placeholder="Contoh: titip di depan pintu"
+            />
           </div>
 
-          {/* ===== PILIHAN EKSPEDISI ===== */}
           <div className="mb-6">
-            <label className="block text-base  font-semibold text-[#2d0000] mb-2 flex items-center gap-2">
+            <label className="block text-base font-semibold text-[#2d0000] mb-2 flex items-center gap-2">
               <Truck size={15} /> Ekspedisi Pengiriman
             </label>
+
             <div className="flex gap-3">
               {ekspedisi.map((exp) => (
                 <button
                   key={exp.id}
-                  onClick={() => { setEkspedisiDipilih(exp.id); setErrors({ ...errors, ekspedisi: "" }) }}
-                  className={`flex-1 border-2 rounded-xl p-3 text-left transition-all ${
-                    ekspedisiDipilih === exp.id
+                  onClick={() => {
+                    setEkspedisiDipilih(exp.id)
+                    setErrors({ ...errors, ekspedisi: "" })
+                  }}
+                  className={`flex-1 border-2 rounded-xl p-3 text-left transition-all ${ekspedisiDipilih === exp.id
                       ? "border-[#7b1d1d] bg-[#7b1d1d]/5"
                       : "border-gray-200 bg-white hover:border-[#7b1d1d]/40"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-base">{exp.logo}</span>
-                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                      ekspedisiDipilih === exp.id ? "border-[#7b1d1d]" : "border-gray-300"
-                    }`}>
+                    <div
+                      className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${ekspedisiDipilih === exp.id ? "border-[#7b1d1d]" : "border-gray-300"
+                        }`}
+                    >
                       {ekspedisiDipilih === exp.id && (
                         <div className="w-2 h-2 rounded-full bg-[#7b1d1d]" />
                       )}
                     </div>
                   </div>
+
                   <p className="text-sm font-bold text-[#2d0000]">{exp.nama}</p>
                   <p className="text-xs text-gray-400 mt-0.5">{exp.layanan}</p>
-                  <p className="text-xs font-semibold text-[#7b1d1d] mt-1">{format(exp.ongkir)}</p>
+                  <p className="text-xs font-semibold text-[#7b1d1d] mt-1">
+                    {format(exp.ongkir)}
+                  </p>
                 </button>
               ))}
             </div>
-            {errors.ekspedisi && <p className="text-red-500 text-xs mt-1">⚠ {errors.ekspedisi}</p>}
+
+            {errors.ekspedisi && (
+              <p className="text-red-500 text-xs mt-1">⚠ {errors.ekspedisi}</p>
+            )}
           </div>
 
-          {/* Tombol Bukti Transaksi */}
           <button
             onClick={() => setShowModal(true)}
-            className={`w-full flex items-center justify-center gap-3 border-2 rounded-xl py-3 font-bold text-base transition-colors ${
-              errors.foto
+            className={`w-full flex items-center justify-center gap-3 border-2 rounded-xl py-3 font-bold text-base transition-colors ${errors.foto
                 ? "border-red-400 text-red-500"
                 : "border-[#7b1d1d] text-[#7b1d1d] hover:bg-[#7b1d1d]/10"
-            }`}
+              }`}
           >
             <FileText size={20} />
             Bukti Transaksi
@@ -174,52 +216,74 @@ export default function CheckoutPage() {
               </span>
             )}
           </button>
-          {errors.foto && <p className="text-red-500 text-xs mt-1">⚠ {errors.foto}</p>}
 
+          {errors.foto && <p className="text-red-500 text-xs mt-1">⚠ {errors.foto}</p>}
         </div>
 
-        {/* ===== KANAN - Pembayaran + Summary ===== */}
         <div className="w-full lg:w-80 bg-[#f0e8df] rounded-3xl p-5 md:p-6 shadow-xl">
-
-          <h2 className="text-base font-bold text-[#2d0000] mb-4">Metode Pembayaran</h2>
+          <h2 className="text-base font-bold text-[#2d0000] mb-4">
+            Metode Pembayaran
+          </h2>
 
           <div className="flex flex-col gap-2 mb-6">
             {banks.map((bank, i) => (
               <div key={i} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <div
                   className="flex items-center justify-between px-4 py-3 cursor-pointer"
-                  onClick={() => { setMetodeDipilih(i); setDropdown(dropdown === i ? null : i); setErrors({ ...errors, metode: "" }) }}
+                  onClick={() => {
+                    setMetodeDipilih(i)
+                    setDropdown(dropdown === i ? null : i)
+                    setErrors({ ...errors, metode: "" })
+                  }}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-blue-700 font-bold text-xs bg-blue-100 px-2 py-0.5 rounded">{bankLabel[i]}</span>
+                    <span className="text-blue-700 font-bold text-xs bg-blue-100 px-2 py-0.5 rounded">
+                      {bankLabel[i]}
+                    </span>
                     <span className="text-sm font-medium text-gray-700">{bank.nama}</span>
                   </div>
-                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${metodeDipilih === i ? "border-[#7b1d1d]" : "border-gray-300"}`}>
-                    {metodeDipilih === i && <div className="w-2.5 h-2.5 rounded-full bg-[#7b1d1d]" />}
+
+                  <div
+                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${metodeDipilih === i ? "border-[#7b1d1d]" : "border-gray-300"
+                      }`}
+                  >
+                    {metodeDipilih === i && (
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#7b1d1d]" />
+                    )}
                   </div>
                 </div>
 
                 {dropdown === i && (
                   <div className="border-t border-gray-100 bg-gray-50 px-4 py-3">
                     <p className="text-xs text-gray-500 mb-1">Nomor Rekening</p>
+
                     <div className="flex items-center justify-between gap-2">
-                      <p className="text-sm font-bold text-[#7b1d1d] tracking-widest">{bank.norek}</p>
+                      <p className="text-sm font-bold text-[#7b1d1d] tracking-widest">
+                        {bank.norek}
+                      </p>
+
                       <button
                         onClick={() => handleCopy(bank.norek, i)}
-                        className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg font-semibold transition-all ${
-                          copied === i
+                        className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg font-semibold transition-all ${copied === i
                             ? "bg-green-100 text-green-600"
                             : "bg-[#7b1d1d]/10 text-[#7b1d1d] hover:bg-[#7b1d1d]/20"
-                        }`}
+                          }`}
                       >
                         {copied === i ? (
-                          <><Check size={12} /> Tersalin!</>
+                          <>
+                            <Check size={12} /> Tersalin!
+                          </>
                         ) : (
-                          <><Copy size={12} /> Salin</>
+                          <>
+                            <Copy size={12} /> Salin
+                          </>
                         )}
                       </button>
                     </div>
-                    <p className="text-xs text-gray-400 mt-1">Atas nama: Gallery Batik Lontara</p>
+
+                    <p className="text-xs text-gray-400 mt-1">
+                      Atas nama: Gallery Batik Lontara
+                    </p>
                   </div>
                 )}
               </div>
@@ -229,17 +293,34 @@ export default function CheckoutPage() {
           {errors.metode && <p className="text-red-500 text-xs mb-3">⚠ {errors.metode}</p>}
 
           <h2 className="text-base font-bold text-[#2d0000] mb-3">Order Summary</h2>
+
           <div className="flex flex-col gap-2 text-sm text-gray-600 mb-4">
-            <div className="flex justify-between"><span>Subtotal</span><span>{format(subtotal)}</span></div>
             <div className="flex justify-between">
-              <span>Ongkir {ekspedisiDipilih ? `(${ekspedisi.find(e => e.id === ekspedisiDipilih)!.nama})` : ""}</span>
-              <span>{ekspedisiDipilih ? format(ongkir) : <span className="text-gray-400 italic text-xs">pilih ekspedisi</span>}</span>
+              <span>Subtotal</span>
+              <span>{format(subtotal)}</span>
             </div>
+
+            <div className="flex justify-between">
+              <span>
+                Ongkir{" "}
+                {ekspedisiDipilih
+                  ? `(${ekspedisi.find((e) => e.id === ekspedisiDipilih)!.nama})`
+                  : ""}
+              </span>
+              <span>
+                {ekspedisiDipilih ? (
+                  format(ongkir)
+                ) : (
+                  <span className="text-gray-400 italic text-xs">pilih ekspedisi</span>
+                )}
+              </span>
+            </div>
+
             <div className="flex justify-between font-bold text-base text-[#2d0000] border-t border-gray-200 pt-3 mt-1">
-              <span>Total</span><span>{format(total)}</span>
+              <span>Total</span>
+              <span>{format(total)}</span>
             </div>
           </div>
-          
 
           <button
             onClick={handleCheckout}
@@ -247,18 +328,20 @@ export default function CheckoutPage() {
           >
             Go to Checkout
           </button>
-
         </div>
       </div>
 
-      {/* ===== MODAL BUKTI TRANSAKSI ===== */}
       {showModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl">
-
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-lg font-bold text-[#2d0000]">Upload Bukti Transaksi</h3>
-              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">
+              <h3 className="text-lg font-bold text-[#2d0000]">
+                Upload Bukti Transaksi
+              </h3>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
                 <X size={22} />
               </button>
             </div>
@@ -269,7 +352,9 @@ export default function CheckoutPage() {
                 className="border-2 border-dashed border-[#7b1d1d]/40 rounded-xl h-52 flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-[#f0e8df] transition-colors"
               >
                 <Upload size={36} className="text-[#7b1d1d]/50" />
-                <p className="text-sm font-semibold text-[#7b1d1d]">Klik untuk pilih foto</p>
+                <p className="text-sm font-semibold text-[#7b1d1d]">
+                  Klik untuk pilih foto
+                </p>
                 <p className="text-xs text-gray-400">JPG, PNG, JPEG</p>
               </div>
             ) : (
@@ -284,8 +369,19 @@ export default function CheckoutPage() {
               </div>
             )}
 
-            <input ref={inputRef} type="file" accept="image/*" onChange={handleFoto} className="hidden" />
-            {foto && <p className="text-xs text-gray-500 mt-2 text-center truncate">📎 {foto.name}</p>}
+            <input
+              ref={inputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFoto}
+              className="hidden"
+            />
+
+            {foto && (
+              <p className="text-xs text-gray-500 mt-2 text-center truncate">
+                📎 {foto.name}
+              </p>
+            )}
 
             <div className="flex gap-3 mt-5">
               <button
@@ -294,19 +390,148 @@ export default function CheckoutPage() {
               >
                 Batal
               </button>
+
               <button
-                onClick={() => { if (foto) setShowModal(false) }}
+                onClick={() => {
+                  if (foto) setShowModal(false)
+                }}
                 disabled={!foto}
-                className={`flex-1 rounded-xl py-2.5 text-sm font-bold text-white transition-colors ${foto ? "bg-[#7b1d1d] hover:bg-[#5e1515] cursor-pointer" : "bg-gray-300 cursor-not-allowed"}`}
+                className={`flex-1 rounded-xl py-2.5 text-sm font-bold text-white transition-colors ${foto
+                    ? "bg-[#7b1d1d] hover:bg-[#5e1515] cursor-pointer"
+                    : "bg-gray-300 cursor-not-allowed"
+                  }`}
               >
                 Simpan
               </button>
             </div>
-
           </div>
         </div>
       )}
 
+      {showSuccess && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/50 backdrop-blur-sm success-fade">
+
+          <div className="bg-white rounded-3xl px-10 py-8 shadow-2xl flex flex-col items-center success-pop border border-green-100 max-w-md w-full">
+
+            {/* ICON */}
+            <div className="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center mb-5 relative">
+              <div className="absolute inset-0 rounded-full bg-green-200 success-ping opacity-40"></div>
+
+              <svg
+                className="w-12 h-12 text-green-600 relative z-10"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+
+            {/* TITLE */}
+            <h2 className="text-2xl font-extrabold text-[#2d0000] text-center">
+              Pembayaran Berhasil
+            </h2>
+
+            <p className="text-sm text-gray-500 mt-2 text-center leading-relaxed">
+              Pembayaran telah berhasil dilakukan.
+              <br />
+              Pesanan kamu sedang diproses oleh admin.
+            </p>
+
+            {/* NOTE RESI */}
+            <div className="w-full bg-[#fef6e8] border border-[#7b1d1d]/10 rounded-2xl p-4 mt-5">
+              <p className="text-sm font-bold text-[#7b1d1d] mb-1">
+                📦 Informasi Pengiriman
+              </p>
+
+              <p className="text-xs text-gray-600 leading-relaxed">
+                Nomor resi akan dikirim setelah pesanan selesai diproses dan paket
+                telah diserahkan ke ekspedisi.
+              </p>
+            </div>
+
+            {/* LOADING */}
+            <div className="mt-5 w-40 h-2 bg-gray-100 rounded-full overflow-hidden">
+              <div className="h-full bg-green-500 success-loading"></div>
+            </div>
+
+            {/* BUTTON */}
+            <button
+              onClick={() => router.push("/ha1")}
+              className="mt-6 w-full bg-[#7b1d1d] hover:bg-[#5e1515] text-white py-3 rounded-2xl text-sm font-bold transition-all duration-300 hover:scale-[1.02]"
+            >
+              Kembali ke Halaman Utama
+            </button>
+          </div>
+        </div>
+      )}
+
+      <style jsx global>{`
+        .success-fade {
+          animation: successFade 0.3s ease-out;
+        }
+
+        .success-pop {
+          animation: successPop 0.45s ease-out;
+        }
+
+        .success-ping {
+          animation: successPing 1.3s ease-out infinite;
+        }
+
+        .success-loading {
+          animation: successLoading 2.2s linear forwards;
+        }
+
+        @keyframes successFade {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes successPop {
+          0% {
+            transform: scale(0.7);
+            opacity: 0;
+          }
+          70% {
+            transform: scale(1.05);
+            opacity: 1;
+          }
+          100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+
+        @keyframes successPing {
+          0% {
+            transform: scale(1);
+            opacity: 0.5;
+          }
+          100% {
+            transform: scale(1.5);
+            opacity: 0;
+          }
+        }
+
+        @keyframes successLoading {
+          from {
+            width: 0%;
+          }
+          to {
+            width: 100%;
+          }
+        }
+      `}</style>
     </div>
   )
 }

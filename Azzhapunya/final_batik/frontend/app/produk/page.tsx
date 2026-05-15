@@ -17,20 +17,7 @@ export default function ProdukPage() {
   ];
 
   return (
-    <div className="bg-white min-h-screen">
-      
-
-      {/* Header */}
-      <div className="text-center mt-20 mb-10 px-4">
-        <h1 className="text-3xl md:text-4xl font-serif font-bold text-gray-900">
-          Produk
-        </h1>
-        <div className="flex items-center justify-center gap-3 mt-2">
-          <div className="h-px w-20 bg-yellow-600" />
-          <span className="text-yellow-500 text-lg">✦</span>
-          <div className="h-px w-20 bg-yellow-600" />
-        </div>
-      </div>
+    <div className="bg-[#f5f0eb] min-h-screen">
 
       {/* Grid Produk */}
       <div className="max-w-full px-2 sm:px-4 md:px-6 lg:px-8">

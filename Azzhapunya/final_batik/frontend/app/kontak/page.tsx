@@ -1,4 +1,4 @@
-import Nav from "../nav/page"
+
 
 export default function Footer() {
   return (

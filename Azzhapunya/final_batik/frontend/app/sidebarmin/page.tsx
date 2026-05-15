@@ -129,8 +129,10 @@ export default function Sidebar() {
 
         {/* Logout */}
         <div className="px-3 py-4 border-t border-white/10">
-          <button
-            className="
+          <a href="/hal1">
+
+            <button
+              className="
               w-full flex items-center gap-3
               px-4 py-3 rounded-xl
               text-base text-white/70
@@ -138,10 +140,11 @@ export default function Sidebar() {
               hover:text-white
               transition-all
             "
-          >
-            <LogOut size={18} />
-            Keluar
-          </button>
+            >
+              <LogOut size={18} />
+              Keluar
+            </button>
+          </a>
         </div>
 
       </aside>

@@ -8,7 +8,7 @@ export default function Page() {
   const router = useRouter()
 
   return (
-    <div className="w-full min-h-screen bg-[#7b1d1d] flex items-center justify-center px-4">
+    <div className="w-full min-h-screen flex items-center justify-center px-4">
       <div className="bg-[#f5ede4] rounded-3xl shadow-2xl p-10 w-full max-w-sm flex flex-col items-center">
 
         {/* Logo */}

@@ -66,10 +66,10 @@ export default function Navbar() {
             <div className="w-[1px] h-6 bg-white/40"></div>
 
             <a href="/login">
-            <User
-              className="text-white cursor-pointer hover:text-[#F2B6BE] hover:scale-110 duration-300"
-              size={22}
-            />
+              <User
+                className="text-white cursor-pointer hover:text-[#F2B6BE] hover:scale-110 duration-300"
+                size={22}
+              />
             </a>
 
           </div>
@@ -79,8 +79,15 @@ export default function Navbar() {
       {/* ================= MOBILE NAVBAR ================= */}
       <div className="md:hidden fixed top-5 left-1/2 -translate-x-1/2 z-50 w-[92%]">
 
-        <div className="bg-[#E7BE49]/90 backdrop-blur-sm rounded-full px-6 py-4 flex items-center justify-between shadow-xl">
-          <a href="/halut">
+        <div className="bg-[#703312]/90 backdrop-blur-sm rounded-full px-6 py-4 flex items-center justify-between shadow-xl">
+
+          <button
+            onClick={() =>
+              document.getElementById("home")?.scrollIntoView({
+                behavior: "smooth",
+              })
+            }
+          >
             <img
               src="/aset/asli.png"
               alt="logo"
@@ -88,41 +95,73 @@ export default function Navbar() {
               height={45}
               className="object-contain"
             />
-          </a>
+          </button>
 
-          <a href="/hal1" className="flex items-center">
+          <button
+            onClick={() =>
+              document.getElementById("profileus")?.scrollIntoView({
+                behavior: "smooth",
+              })
+            }
+            className="flex items-center"
+          >
             <House
               className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
               size={22}
             />
-          </a>
-          <a href="/kontak" className="flex items-center">
+          </button>
+
+          <button
+            onClick={() =>
+              document.getElementById("kontak")?.scrollIntoView({
+                behavior: "smooth",
+              })
+            }
+            className="flex items-center"
+          >
             <Mail
               className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
               size={22}
             />
-          </a>
+          </button>
 
-          <a href="/produkbaru" className="flex items-center">
+          <button
+            onClick={() =>
+              document.getElementById("produk")?.scrollIntoView({
+                behavior: "smooth",
+              })
+            }
+            className="flex items-center"
+          >
             <Shirt
               className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
               size={22}
             />
-          </a>
+          </button>
 
-          <a href="/booking" className="flex items-center">
+          <a
+            href="/booking"
+            className="flex items-center transition-all duration-300 hover:scale-110"
+          >
             <GraduationCap
-              className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
+              className="text-white hover:text-[#F2B6BE] duration-300"
               size={22}
             />
           </a>
 
-          <a href="/login" className="flex items-center">
+          <button
+            onClick={() =>
+              document.getElementById("login")?.scrollIntoView({
+                behavior: "smooth",
+              })
+            }
+            className="flex items-center"
+          >
             <User
               className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
               size={22}
             />
-          </a>
+          </button>
         </div>
       </div>
     </>

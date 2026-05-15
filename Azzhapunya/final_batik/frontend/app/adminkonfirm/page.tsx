@@ -172,8 +172,8 @@ export default function OrderConfirmationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 font-sans p-6 md:ml-64">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gray-100 font-sans ">
+      <div className="p-6 md:ml-64">
 
         {/* Header */}
         <div className="w-full bg-[#7d0000] rounded-2xl px-6 py-5 mb-6 flex items-center gap-4 shadow-md">

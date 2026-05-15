@@ -80,22 +80,12 @@ export default function ProdukAdmin() {
       <div className="min-h-screen bg-gray-100 flex font-sans">
 
         {/* SIDEBAR */}
+
         <Sidebar />
 
         {/* CONTENT */}
 
         <div className="flex-1 p-6 md:ml-64">
-          <div className="w-full bg-[#7d0000] rounded-2xl px-6 py-5 mb-6 flex items-center gap-4 shadow-md">
-            <span className="text-3xl">👋</span>
-            <div>
-              <h1 className="text-white font-bold text-xl leading-tight">
-                Hai, Admin!
-              </h1>
-              <p className="text-white/70 text-sm mt-0.5">
-                Selamat bekerja — semoga harimu produktif dan menyenangkan.
-              </p>
-            </div>
-          </div>
 
           <div className="max-w-2xl mx-auto bg-white rounded-2xl p-6 shadow-sm">
 
@@ -284,17 +274,20 @@ export default function ProdukAdmin() {
       {/* CONTENT */}
       <div className="flex-1 p-6 md:ml-64">
 
-        <div className="flex items-center justify-between mb-6">
-
+        <div className="w-full bg-[#7d0000] rounded-2xl px-6 py-5 mb-6 flex items-center gap-4 shadow-md">
+          <span className="text-3xl">👋</span>
           <div>
-            <h1 className="font-bold text-gray-800 text-base">
-              Produk
+            <h1 className="text-white font-bold text-xl leading-tight">
+              Hai, Admin!
             </h1>
-
-            <p className="text-xs text-gray-400">
-              Selamat datang, Admin 👋
+            <p className="text-white/70 text-sm mt-0.5">
+              Selamat bekerja — semoga harimu produktif dan menyenangkan.
             </p>
           </div>
+        </div>
+        
+        <div className="flex items-center mb-6">
+
 
           <button
             onClick={() => setShowForm(true)}

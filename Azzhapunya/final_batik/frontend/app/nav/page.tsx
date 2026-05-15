@@ -30,8 +30,9 @@ export default function Navbar() {
           {/* Menu */}
           <div className="hidden md:flex items-center gap-14 text-white font-bp text-xl">
             <a href="/hal1" className="hover:text-yellow-100 transition">Profil usaha</a>
+            <a href="/hal1" className="hover:text-yellow-100 transition">Kontak</a>
             <a href="/hal1" className="hover:text-yellow-100 transition">Produk</a>
-            <a href="/hal" className="hover:text-yellow-100 transition">Pelatihan Membatik</a>
+            <a href="/hal1" className="hover:text-yellow-100 transition">Pelatihan Membatik</a>
           </div>
 
           {/* Icons */}
@@ -56,8 +57,8 @@ export default function Navbar() {
       </div>
 
       {/* ================= MOBILE ================= */}
-      <div className="md:hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 w-[92%]">
-        <div className="bg-[#E7BE49]/90 backdrop-blur-sm rounded-full px-6 py-4 flex items-center justify-between shadow-xl">
+      <div className="md:hidden fixed top-5 left-1/2 -translate-x-1/2 z-50 w-[92%]">
+        <div className="bg-[#703312]/90 backdrop-blur-sm rounded-full px-6 py-4 flex items-center justify-between shadow-xl">
           <a href="/halut">
             <img
               src="/aset/asli.png"
@@ -74,13 +75,13 @@ export default function Navbar() {
               size={22}
             />
           </a>
-          <a href="/kontak" className="flex items-center">
+          <a href="/hal1" className="flex items-center">
             <Mail
               className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
               size={22}
             />
           </a>
-          <a href="/produkbaru" className="flex items-center">
+          <a href="/hal1" className="flex items-center">
             <Shirt
               className="text-white hover:text-[#F2B6BE] hover:scale-110 duration-300"
               size={22}
