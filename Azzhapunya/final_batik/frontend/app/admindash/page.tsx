@@ -89,49 +89,17 @@ export default function Page() {
       {/* CONTENT */}
       <div className="flex-1 p-6 md:ml-64">
 
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-
+        {/* Greeting Banner */}
+        <div className="w-full bg-[#7d0000] rounded-2xl px-6 py-5 mb-6 flex items-center gap-4 shadow-md">
+          <span className="text-3xl">👋</span>
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">
-              Dashboard
+            <h1 className="text-white font-bold text-xl leading-tight">
+              Hai, Admin!
             </h1>
-
-            <p className="text-sm text-gray-500">
-              Selamat datang, Admin 👋
+            <p className="text-white/70 text-sm mt-0.5">
+              Selamat bekerja — semoga harimu produktif dan menyenangkan.
             </p>
           </div>
-
-          <div className="flex items-center gap-3">
-
-            <div className="relative">
-
-              <span className="text-xl">
-                🔔
-              </span>
-
-              <span
-                className="
-                  absolute -top-1 -right-1
-                  w-2 h-2 bg-red-500 rounded-full
-                "
-              />
-
-            </div>
-
-            <div
-              className="
-                w-8 h-8 rounded-full
-                bg-orange-500
-                flex items-center justify-center
-                text-white font-bold text-sm
-              "
-            >
-              A
-            </div>
-
-          </div>
-
         </div>
 
         {/* Cards */}
@@ -143,19 +111,13 @@ export default function Page() {
             gap-4 mb-6
           "
         >
-
           {stats.map((s) => (
             <div
               key={s.label}
               className="bg-white rounded-2xl p-5 shadow-sm"
             >
-
               <div className="flex items-center justify-between mb-3">
-
-                <span className="text-2xl">
-                  {s.icon}
-                </span>
-
+                <span className="text-2xl">{s.icon}</span>
                 <span
                   className={`
                     text-xs font-semibold
@@ -169,93 +131,43 @@ export default function Page() {
                 >
                   {s.change}
                 </span>
-
               </div>
-
-              <p className="text-xl font-bold text-gray-800">
-                {s.value}
-              </p>
-
-              <p className="text-sm text-gray-400 mt-1">
-                {s.label}
-              </p>
-
+              <p className="text-xl font-bold text-gray-800">{s.value}</p>
+              <p className="text-sm text-gray-400 mt-1">{s.label}</p>
             </div>
           ))}
-
         </div>
 
         {/* Recent Orders */}
         <div className="bg-white rounded-2xl shadow-sm p-5 mb-6 overflow-x-auto">
-
           <div className="flex items-center justify-between mb-4">
-
-            <h2 className="font-semibold text-gray-800">
-              Pesanan Terbaru
-            </h2>
-
+            <h2 className="font-semibold text-gray-800">Pesanan Terbaru</h2>
             <button className="text-sm text-orange-500 hover:underline">
               Lihat semua
             </button>
-
           </div>
 
           <table className="w-full text-sm min-w-[600px]">
-
             <thead>
-
               <tr className="text-gray-400 text-left border-b border-gray-100">
-
-                <th className="pb-2 font-medium">
-                  ID
-                </th>
-
-                <th className="pb-2 font-medium">
-                  Pelanggan
-                </th>
-
-                <th className="pb-2 font-medium">
-                  Produk
-                </th>
-
-                <th className="pb-2 font-medium">
-                  Total
-                </th>
-
-                <th className="pb-2 font-medium">
-                  Status
-                </th>
-
+                <th className="pb-2 font-medium">ID</th>
+                <th className="pb-2 font-medium">Pelanggan</th>
+                <th className="pb-2 font-medium">Produk</th>
+                <th className="pb-2 font-medium">Total</th>
+                <th className="pb-2 font-medium">Status</th>
               </tr>
-
             </thead>
-
             <tbody>
-
               {orders.map((o) => (
                 <tr
                   key={o.id}
                   className="border-b border-gray-50 last:border-0"
                 >
-
-                  <td className="py-3 text-gray-400">
-                    {o.id}
-                  </td>
-
-                  <td className="py-3 font-medium text-gray-700">
-                    {o.customer}
-                  </td>
-
-                  <td className="py-3 text-gray-500">
-                    {o.product}
-                  </td>
-
-                  <td className="py-3 font-semibold text-red-500">
-                    {o.total}
-                  </td>
-
+                  <td className="py-3 text-gray-400">{o.id}</td>
+                  <td className="py-3 font-medium text-gray-700">{o.customer}</td>
+                  <td className="py-3 text-gray-500">{o.product}</td>
+                  <td className="py-3 font-semibold text-red-500">{o.total}</td>
                   <td className="py-3">
-
                     <span
                       className={`
                         inline-flex items-center gap-1
@@ -266,37 +178,23 @@ export default function Page() {
                     >
                       {statusIcon[o.status]} {o.status}
                     </span>
-
                   </td>
-
                 </tr>
               ))}
-
             </tbody>
-
           </table>
-
         </div>
 
         {/* Low Stock */}
         <div className="bg-white rounded-2xl shadow-sm p-5">
-
-          <h2 className="font-semibold text-gray-800 mb-4">
-            ⚠️ Stok Menipis
-          </h2>
-
+          <h2 className="font-semibold text-gray-800 mb-4">⚠️ Stok Menipis</h2>
           <div className="flex flex-col gap-3">
-
             {lowStocks.map((item) => (
               <div
                 key={item.name}
                 className="flex items-center justify-between"
               >
-
-                <span className="text-sm text-gray-600">
-                  {item.name}
-                </span>
-
+                <span className="text-sm text-gray-600">{item.name}</span>
                 <span
                   className={`
                     text-xs font-semibold
@@ -310,16 +208,12 @@ export default function Page() {
                 >
                   Stok: {item.stock}
                 </span>
-
               </div>
             ))}
-
           </div>
-
         </div>
 
       </div>
-
     </div>
   )
 }

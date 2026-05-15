@@ -49,36 +49,20 @@ export default function PesananTerbaru() {
       <Sidebar />
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">
-            Dashboard
-          </h1>
-
-          <p className="text-sm text-gray-500">
-            Selamat datang, Admin 👋
-          </p>
+        <div className="w-full bg-[#7d0000] rounded-2xl px-6 py-5 mb-6 flex items-center gap-4 shadow-md">
+          <span className="text-3xl">👋</span>
+          <div>
+            <h1 className="text-white font-bold text-xl leading-tight">
+              Hai, Admin!
+            </h1>
+            <p className="text-white/70 text-sm mt-0.5">
+              Selamat bekerja — semoga harimu produktif dan menyenangkan.
+            </p>
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
 
-          <div className="relative">
-            <span className="text-xl">🔔</span>
-
-            <span className="
-                absolute -top-1 -right-1
-                w-2 h-2 bg-red-500 rounded-full
-              " />
-          </div>
-
-          <div className="
-              w-8 h-8 rounded-full
-              bg-orange-500
-              flex items-center justify-center
-              text-white font-bold text-sm
-            ">
-            A
-          </div>
 
         </div>
 

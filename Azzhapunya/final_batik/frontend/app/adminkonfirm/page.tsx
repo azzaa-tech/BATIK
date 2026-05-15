@@ -172,16 +172,20 @@ export default function OrderConfirmationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6 md:p-10">
+    <div className="min-h-screen bg-gray-100 font-sans p-6 md:ml-64">
       <div className="max-w-6xl mx-auto">
 
         {/* Header */}
-        <div className="mb-8">
-          <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-1">Dashboard Admin</p>
-          <h1 className="text-2xl font-bold text-slate-800">Semua Pesanan</h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Klik badge status untuk ubah status · Klik ikon mata untuk lihat bukti pembayaran
-          </p>
+        <div className="w-full bg-[#7d0000] rounded-2xl px-6 py-5 mb-6 flex items-center gap-4 shadow-md">
+          <span className="text-3xl">👋</span>
+          <div>
+            <h1 className="text-white font-bold text-xl leading-tight">
+              Hai, Admin!
+            </h1>
+            <p className="text-white/70 text-sm mt-0.5">
+              Selamat bekerja — semoga harimu produktif dan menyenangkan.
+            </p>
+          </div>
         </div>
 
         {/* Stats */}

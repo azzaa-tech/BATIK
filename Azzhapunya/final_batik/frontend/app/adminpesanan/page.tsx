@@ -83,7 +83,19 @@ export default function ProdukAdmin() {
         <Sidebar />
 
         {/* CONTENT */}
+
         <div className="flex-1 p-6 md:ml-64">
+          <div className="w-full bg-[#7d0000] rounded-2xl px-6 py-5 mb-6 flex items-center gap-4 shadow-md">
+            <span className="text-3xl">👋</span>
+            <div>
+              <h1 className="text-white font-bold text-xl leading-tight">
+                Hai, Admin!
+              </h1>
+              <p className="text-white/70 text-sm mt-0.5">
+                Selamat bekerja — semoga harimu produktif dan menyenangkan.
+              </p>
+            </div>
+          </div>
 
           <div className="max-w-2xl mx-auto bg-white rounded-2xl p-6 shadow-sm">
 
@@ -106,11 +118,10 @@ export default function ProdukAdmin() {
                     value={form.nama}
                     onChange={set("nama")}
                     placeholder="Masukkan nama barang"
-                    className={`w-full border rounded-lg px-3 py-2 text-sm outline-none ${
-                      errors.nama
-                        ? "border-red-400"
-                        : "border-gray-300 focus:border-[#7b1d1d]"
-                    }`}
+                    className={`w-full border rounded-lg px-3 py-2 text-sm outline-none ${errors.nama
+                      ? "border-red-400"
+                      : "border-gray-300 focus:border-[#7b1d1d]"
+                      }`}
                   />
 
                   {errors.nama && (
@@ -158,11 +169,10 @@ export default function ProdukAdmin() {
                     value={form.stok}
                     onChange={set("stok")}
                     placeholder="Masukkan jumlah stok"
-                    className={`w-full border rounded-lg px-3 py-2 text-sm outline-none ${
-                      errors.stok
-                        ? "border-red-400"
-                        : "border-gray-300 focus:border-[#7b1d1d]"
-                    }`}
+                    className={`w-full border rounded-lg px-3 py-2 text-sm outline-none ${errors.stok
+                      ? "border-red-400"
+                      : "border-gray-300 focus:border-[#7b1d1d]"
+                      }`}
                   />
 
                   {errors.stok && (
@@ -311,11 +321,10 @@ export default function ProdukAdmin() {
                 </p>
 
                 <span
-                  className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                    p.stok <= 5
-                      ? "bg-red-100 text-red-600"
-                      : "bg-green-100 text-green-700"
-                  }`}
+                  className={`text-xs font-bold px-2 py-0.5 rounded-full ${p.stok <= 5
+                    ? "bg-red-100 text-red-600"
+                    : "bg-green-100 text-green-700"
+                    }`}
                 >
                   Stok: {p.stok}
                 </span>
