@@ -1,13 +1,79 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Minus, Plus } from "lucide-react"
 import Navbar from "../navbar/page"
+import { useRouter } from "next/navigation"
+import { apiRequest } from "@/lib/api"
+
+type Product = {
+  id: number
+  nama: string
+  deskripsi: string
+  harga: number
+  stok: number
+  gambar: string
+}
 
 export default function ProductDetail() {
 
   const [qty, setQty] = useState(1)
   const [size, setSize] = useState("")
+  const [product, setProduct] = useState<Product | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const router = useRouter()
+
+  useEffect(() => {
+    const loadProduct = async () => {
+      try {
+        const params = new URLSearchParams(window.location.search)
+        const productId = params.get("id") || "1"
+        const response = await apiRequest<Product>(`/products/${productId}`)
+        setProduct(response.data || null)
+      } catch (error) {
+        alert(error instanceof Error ? error.message : "Gagal mengambil detail produk")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadProduct()
+  }, [])
+
+  const addToCart = async () => {
+    if (!product) return
+    if (!size) {
+      alert("Pilih ukuran terlebih dahulu")
+      return
+    }
+
+    try {
+      setSaving(true)
+      await apiRequest("/cart", {
+        method: "POST",
+        auth: true,
+        body: JSON.stringify({
+          productId: product.id,
+          qty,
+          size,
+        }),
+      })
+      router.push("/cart")
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Gagal menambahkan ke keranjang")
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Memuat produk...</div>
+  }
+
+  if (!product) {
+    return <div className="min-h-screen flex items-center justify-center">Produk tidak ditemukan.</div>
+  }
 
   return (
     <div className="min-h-screen bg-[#f5f0eb] pb-28 mp-5 flex justify-center items-center">
@@ -19,8 +85,8 @@ export default function ProductDetail() {
 
         {/* GAMBAR */}
         <img
-          src="/aset/produk.png"
-          alt="produk"
+          src={product.gambar || "/aset/produk.png"}
+          alt={product.nama}
           className="w-full md:w-[280px] h-[350px] object-cover rounded-2xl"
         />
 
@@ -28,12 +94,11 @@ export default function ProductDetail() {
         <div className="flex-1">
 
           <h1 className="text-3xl font-bold text-[#2d0000] mb-4">
-            Blouse Batik 01
+            {product.nama}
           </h1>
 
           <p className="text-sm text-gray-600 leading-7 mb-6">
-            Batik premium khas Sulawesi Selatan dengan desain elegan,
-            nyaman digunakan untuk acara formal maupun casual.
+            {product.deskripsi}
           </p>
 
           {/* SIZE */}
@@ -86,16 +151,14 @@ export default function ProductDetail() {
             </div>
 
             <p className="text-sm text-gray-600">
-              Stok : <b>50</b>
+              Stok : <b>{product.stok}</b>
             </p>
           </div>
 
           {/* BUTTON */}
-          <a href='/cart'>
-          <button className="bg-[#7b1d1d] text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90">
-            Add to Cart
+          <button onClick={addToCart} disabled={saving || product.stok === 0} className="bg-[#7b1d1d] text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 disabled:cursor-not-allowed disabled:bg-gray-400">
+            {saving ? "Menyimpan..." : "Add to Cart"}
           </button>
-          </a>
 
         </div>
       </div>

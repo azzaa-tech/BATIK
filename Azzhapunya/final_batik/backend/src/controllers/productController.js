@@ -1,7 +1,5 @@
 const { validationResult } = require("express-validator");
-const { PrismaClient } = require("@prisma/client");
-
-const prisma = new PrismaClient();
+const prisma = require("../utils/prisma");
 
 const normalizeProductPayload = (body) => {
   const payload = { ...body };
@@ -87,6 +85,7 @@ const createProduct = async (req, res, next) => {
     const product = await prisma.product.create({
       data: normalizeProductPayload(req.body),
     });
+    console.log("[PRODUCT CREATED]", { id: product.id, nama: product.nama });
 
     return res.status(201).json({
       success: true,
@@ -114,6 +113,7 @@ const updateProduct = async (req, res, next) => {
       where: { id: Number(req.params.id) },
       data: normalizeProductPayload(req.body),
     });
+    console.log("[PRODUCT UPDATED]", { id: product.id, nama: product.nama });
 
     return res.status(200).json({
       success: true,

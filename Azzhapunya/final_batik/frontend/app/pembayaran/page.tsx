@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { ChangeEvent, useRef, useState } from "react"
 import Image from "next/image"
 import { FileText, Upload, X } from "lucide-react"
 import Navbar from "../navbar/page"
+import { apiRequest } from "@/lib/api"
 
 const banks = [
   { nama: "BCA Virtual Account", norek: "1234-5678-9012" },
@@ -14,29 +15,46 @@ const banks = [
 
 const bankLabel = ["BCA", "MDR", "BNI", "BRI"]
 
+type CheckoutErrors = Partial<{
+  nama: string
+  alamat: string
+  telpon: string
+  metode: string
+  foto: string
+}>
+
+type CheckoutItem = {
+  productId: number
+  qty: number
+  size: string
+  harga: number
+}
+
 export default function CheckoutPage() {
-
   const [form, setForm] = useState({ nama: "", alamat: "", telpon: "", catatan: "" })
-  const [errors, setErrors] = useState({})
-  const [metodeDipilih, setMetodeDipilih] = useState(null)
-  const [dropdown, setDropdown] = useState(null)
-
-  // Bukti transaksi
+  const [errors, setErrors] = useState<CheckoutErrors>({})
+  const [metodeDipilih, setMetodeDipilih] = useState<number | null>(null)
+  const [dropdown, setDropdown] = useState<number | null>(null)
   const [showModal, setShowModal] = useState(false)
-  const [foto, setFoto] = useState(null)
-  const [preview, setPreview] = useState(null)
-  const inputRef = useRef(null)
+  const [foto, setFoto] = useState<File | null>(null)
+  const [preview, setPreview] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
-  const subtotal = 200000
-  const ongkir   = 15000
-  const total    = subtotal + ongkir
-  const format   = (n) => "Rp" + n.toLocaleString("id-ID")
+  const subtotal =
+    typeof window === "undefined" ? 0 : Number(sessionStorage.getItem("batik_checkout_subtotal") || 0)
+  const ongkir =
+    typeof window === "undefined" ? 0 : Number(sessionStorage.getItem("batik_checkout_ongkir") || 0)
+  const total =
+    typeof window === "undefined" ? 0 : Number(sessionStorage.getItem("batik_checkout_total") || subtotal + ongkir)
+  const format = (n: number) => "Rp" + n.toLocaleString("id-ID")
 
-  const handleFoto = (e) => {
-    const file = e.target.files[0]
+  const handleFoto = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
     if (!file) return
     setFoto(file)
     setPreview(URL.createObjectURL(file))
+    setErrors({ ...errors, foto: "" })
   }
 
   const hapusFoto = () => {
@@ -45,18 +63,53 @@ export default function CheckoutPage() {
     if (inputRef.current) inputRef.current.value = ""
   }
 
-  const handleCheckout = () => {
-    const newErrors = {}
-    if (!form.nama.trim())      newErrors.nama    = "Nama penerima wajib diisi"
-    if (!form.alamat.trim())    newErrors.alamat  = "Alamat wajib diisi"
-    if (!form.telpon.trim())    newErrors.telpon  = "No. Telepon wajib diisi"
-    if (metodeDipilih === null) newErrors.metode  = "Pilih metode pembayaran dulu"
-    if (!foto)                  newErrors.foto    = "Upload bukti transaksi dulu"
+  const handleCheckout = async () => {
+    const newErrors: CheckoutErrors = {}
+    if (!form.nama.trim()) newErrors.nama = "Nama penerima wajib diisi"
+    if (!form.alamat.trim()) newErrors.alamat = "Alamat wajib diisi"
+    if (!form.telpon.trim()) newErrors.telpon = "No. Telepon wajib diisi"
+    if (metodeDipilih === null) newErrors.metode = "Pilih metode pembayaran dulu"
+    if (!foto) newErrors.foto = "Upload bukti transaksi dulu"
 
     setErrors(newErrors)
+    if (Object.keys(newErrors).length > 0 || !foto || metodeDipilih === null) return
 
-    if (Object.keys(newErrors).length === 0) {
-      alert("✅ Pesanan berhasil dikonfirmasi!")
+    const items = JSON.parse(sessionStorage.getItem("batik_checkout_items") || "[]") as CheckoutItem[]
+    if (items.length === 0) {
+      alert("Keranjang kosong. Tambahkan produk terlebih dahulu.")
+      return
+    }
+
+    try {
+      setLoading(true)
+      const payload = new FormData()
+      payload.append("namaPenerima", form.nama)
+      payload.append("alamat", form.alamat)
+      payload.append("telpon", form.telpon)
+      payload.append("catatan", form.catatan)
+      payload.append("metodePembayaran", banks[metodeDipilih].nama)
+      payload.append("subtotal", String(subtotal))
+      payload.append("ongkir", String(ongkir))
+      payload.append("total", String(total))
+      payload.append("items", JSON.stringify(items))
+      payload.append("buktiTransaksi", foto)
+
+      const response = await apiRequest("/orders", {
+        method: "POST",
+        auth: true,
+        body: payload,
+      })
+
+      sessionStorage.removeItem("batik_checkout_items")
+      sessionStorage.removeItem("batik_checkout_subtotal")
+      sessionStorage.removeItem("batik_checkout_ongkir")
+      sessionStorage.removeItem("batik_checkout_total")
+      alert(response.message)
+      window.location.href = "/hal1"
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Checkout gagal")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -64,82 +117,107 @@ export default function CheckoutPage() {
     <div className="min-h-screen pb-28 pt-28 bg-[#7b1d1d] p-6 font-sans">
       <Navbar />
 
-     <div className="max-w-5xl mx-auto flex flex-col lg:flex-row gap-6 items-start">
-
-        {/* ===== KIRI - Form ===== */}
-        <div className="flex-1 min-w-[650px] bg-[#f0e8df] rounded-2xl p-6 shadow-lg">
-
+      <div className="max-w-5xl mx-auto flex flex-col lg:flex-row gap-6 items-start">
+        <div className="w-full lg:flex-1 bg-[#f0e8df] rounded-2xl p-6 shadow-lg">
           <div className="mb-6">
             <Image src="/aset/logo.png" alt="logo" width={90} height={45} className="object-contain" />
           </div>
 
           <div className="mb-4">
             <label className="block text-sm font-semibold text-[#2d0000] mb-1">Nama Penerima</label>
-            <input type="text" value={form.nama} onChange={(e) => { setForm({ ...form, nama: e.target.value }); setErrors({ ...errors, nama: "" }) }}
-              className={`w-full border rounded-lg px-4 py-2.5 text-sm outline-none bg-white ${errors.nama ? "border-red-400" : "border-gray-300 focus:border-[#7b1d1d]"}`}
-              placeholder="Masukkan nama penerima" />
-            {errors.nama && <p className="text-red-500 text-xs mt-1">⚠ {errors.nama}</p>}
+            <input
+              type="text"
+              value={form.nama}
+              onChange={(e) => {
+                setForm({ ...form, nama: e.target.value })
+                setErrors({ ...errors, nama: "" })
+              }}
+              className={`w-full border rounded-lg px-4 py-2.5 text-sm outline-none bg-white ${
+                errors.nama ? "border-red-400" : "border-gray-300 focus:border-[#7b1d1d]"
+              }`}
+              placeholder="Masukkan nama penerima"
+            />
+            {errors.nama && <p className="text-red-500 text-xs mt-1">{errors.nama}</p>}
           </div>
 
           <div className="mb-4">
             <label className="block text-sm font-semibold text-[#2d0000] mb-1">Alamat</label>
-            <input type="text" value={form.alamat} onChange={(e) => { setForm({ ...form, alamat: e.target.value }); setErrors({ ...errors, alamat: "" }) }}
-              className={`w-full border rounded-lg px-4 py-2.5 text-sm outline-none bg-white ${errors.alamat ? "border-red-400" : "border-gray-300 focus:border-[#7b1d1d]"}`}
-              placeholder="Masukkan alamat lengkap" />
-            {errors.alamat && <p className="text-red-500 text-xs mt-1">⚠ {errors.alamat}</p>}
+            <input
+              type="text"
+              value={form.alamat}
+              onChange={(e) => {
+                setForm({ ...form, alamat: e.target.value })
+                setErrors({ ...errors, alamat: "" })
+              }}
+              className={`w-full border rounded-lg px-4 py-2.5 text-sm outline-none bg-white ${
+                errors.alamat ? "border-red-400" : "border-gray-300 focus:border-[#7b1d1d]"
+              }`}
+              placeholder="Masukkan alamat lengkap"
+            />
+            {errors.alamat && <p className="text-red-500 text-xs mt-1">{errors.alamat}</p>}
           </div>
 
           <div className="mb-4">
             <label className="block text-sm font-semibold text-[#2d0000] mb-1">No. Telepon</label>
-            <input type="tel" value={form.telpon} onChange={(e) => { setForm({ ...form, telpon: e.target.value }); setErrors({ ...errors, telpon: "" }) }}
-              className={`w-full border rounded-lg px-4 py-2.5 text-sm outline-none bg-white ${errors.telpon ? "border-red-400" : "border-gray-300 focus:border-[#7b1d1d]"}`}
-              placeholder="08xxxxxxxxxx" />
-            {errors.telpon && <p className="text-red-500 text-xs mt-1">⚠ {errors.telpon}</p>}
+            <input
+              type="tel"
+              value={form.telpon}
+              onChange={(e) => {
+                setForm({ ...form, telpon: e.target.value })
+                setErrors({ ...errors, telpon: "" })
+              }}
+              className={`w-full border rounded-lg px-4 py-2.5 text-sm outline-none bg-white ${
+                errors.telpon ? "border-red-400" : "border-gray-300 focus:border-[#7b1d1d]"
+              }`}
+              placeholder="08xxxxxxxxxx"
+            />
+            {errors.telpon && <p className="text-red-500 text-xs mt-1">{errors.telpon}</p>}
           </div>
 
           <div className="mb-6">
             <label className="block text-sm font-semibold text-[#2d0000] mb-1">
               Catatan Untuk Kurir <span className="font-normal text-gray-400">(Opsional)</span>
             </label>
-            <input type="text" value={form.catatan} onChange={(e) => setForm({ ...form, catatan: e.target.value })}
+            <input
+              type="text"
+              value={form.catatan}
+              onChange={(e) => setForm({ ...form, catatan: e.target.value })}
               className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[#7b1d1d] bg-white"
-              placeholder="Contoh: titip di depan pintu" />
+              placeholder="Contoh: titip di depan pintu"
+            />
           </div>
 
-          {/* Tombol Bukti Transaksi */}
           <button
             onClick={() => setShowModal(true)}
-            className={`w-full flex items-center justify-center gap-3 border-2 rounded-xl py-3 font-bold text-base transition-colors ${errors.foto ? "border-red-400 text-red-500" : "border-[#7b1d1d] text-[#7b1d1d] hover:bg-[#7b1d1d]/10"}`}
+            className={`w-full flex items-center justify-center gap-3 border-2 rounded-xl py-3 font-bold text-base transition-colors ${
+              errors.foto ? "border-red-400 text-red-500" : "border-[#7b1d1d] text-[#7b1d1d] hover:bg-[#7b1d1d]/10"
+            }`}
           >
             <FileText size={20} />
             Bukti Transaksi
-            {foto && (
-              <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-normal">
-                ✓ Terupload
-              </span>
-            )}
+            {foto && <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-normal">Terupload</span>}
           </button>
-          {errors.foto && <p className="text-red-500 text-xs mt-1">⚠ {errors.foto}</p>}
-
+          {errors.foto && <p className="text-red-500 text-xs mt-1">{errors.foto}</p>}
         </div>
 
-        {/* ===== KANAN - Pembayaran + Summary ===== */}
         <div className="w-full lg:flex-1 bg-[#f0e8df] rounded-3xl p-5 md:p-6 shadow-xl">
-
           <h2 className="text-base font-bold text-[#2d0000] mb-4">Metode Pembayaran</h2>
 
           <div className="flex flex-col gap-2 mb-6">
             {banks.map((bank, i) => (
-              <div key={i} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+              <div key={bank.nama} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <div
                   className="flex items-center justify-between px-4 py-3 cursor-pointer"
-                  onClick={() => { setMetodeDipilih(i); setDropdown(dropdown === i ? null : i) }}
+                  onClick={() => {
+                    setMetodeDipilih(i)
+                    setDropdown(dropdown === i ? null : i)
+                  }}
                 >
                   <div className="flex items-center gap-3">
                     <span className="text-blue-700 font-bold text-xs bg-blue-100 px-2 py-0.5 rounded">{bankLabel[i]}</span>
                     <span className="text-sm font-medium text-gray-700">{bank.nama}</span>
                   </div>
-                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${metodeDipilih === i ? "border-[#7b1d1d]" : "border-gray-300"}`}>
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${metodeDipilih === i ? "border-[#7b1d1d]" : "border-gray-300"}`}>
                     {metodeDipilih === i && <div className="w-2.5 h-2.5 rounded-full bg-[#7b1d1d]" />}
                   </div>
                 </div>
@@ -154,7 +232,7 @@ export default function CheckoutPage() {
             ))}
           </div>
 
-          {errors.metode && <p className="text-red-500 text-xs mb-3">⚠ {errors.metode}</p>}
+          {errors.metode && <p className="text-red-500 text-xs mb-3">{errors.metode}</p>}
 
           <h2 className="text-base font-bold text-[#2d0000] mb-3">Order Summary</h2>
           <div className="flex flex-col gap-2 text-sm text-gray-600 mb-4">
@@ -167,20 +245,17 @@ export default function CheckoutPage() {
 
           <button
             onClick={handleCheckout}
-            className="w-full bg-[#7b1d1d] text-white rounded-full py-3 text-sm font-bold hover:bg-[#5e1515] transition-colors"
+            disabled={loading}
+            className="w-full bg-[#7b1d1d] text-white rounded-full py-3 text-sm font-bold hover:bg-[#5e1515] disabled:bg-gray-400"
           >
-            Go to Checkout
+            {loading ? "Memproses..." : "Go to Checkout"}
           </button>
-
         </div>
       </div>
 
-      {/* ===== MODAL BUKTI TRANSAKSI ===== */}
       {showModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl">
-
-            {/* Header */}
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-lg font-bold text-[#2d0000]">Upload Bukti Transaksi</h3>
               <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">
@@ -188,7 +263,6 @@ export default function CheckoutPage() {
               </button>
             </div>
 
-            {/* Area upload / preview */}
             {!preview ? (
               <div
                 onClick={() => inputRef.current?.click()}
@@ -201,42 +275,32 @@ export default function CheckoutPage() {
             ) : (
               <div className="relative rounded-xl overflow-hidden h-52">
                 <img src={preview} alt="preview" className="w-full h-full object-cover" />
-                <button
-                  onClick={hapusFoto}
-                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                >
+                <button onClick={hapusFoto} className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600">
                   <X size={16} />
                 </button>
               </div>
             )}
 
-            {/* Input file hidden */}
-            <input ref={inputRef} type="file" accept="image/*" onChange={handleFoto} className="hidden" />
+            <input ref={inputRef} type="file" accept="image/jpeg,image/png" onChange={handleFoto} className="hidden" />
+            {foto && <p className="text-xs text-gray-500 mt-2 text-center truncate">{foto.name}</p>}
 
-            {/* Nama file */}
-            {foto && <p className="text-xs text-gray-500 mt-2 text-center truncate">📎 {foto.name}</p>}
-
-            {/* Tombol Batal / Simpan */}
             <div className="flex gap-3 mt-5">
-              <button
-                onClick={() => setShowModal(false)}
-                className="flex-1 border border-gray-300 rounded-xl py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
-              >
+              <button onClick={() => setShowModal(false)} className="flex-1 border border-gray-300 rounded-xl py-2.5 text-sm text-gray-600 hover:bg-gray-50">
                 Batal
               </button>
               <button
-                onClick={() => { if (foto) setShowModal(false) }}
+                onClick={() => {
+                  if (foto) setShowModal(false)
+                }}
                 disabled={!foto}
-                className={`flex-1 rounded-xl py-2.5 text-sm font-bold text-white transition-colors ${foto ? "bg-[#7b1d1d] hover:bg-[#5e1515] cursor-pointer" : "bg-gray-300 cursor-not-allowed"}`}
+                className={`flex-1 rounded-xl py-2.5 text-sm font-bold text-white ${foto ? "bg-[#7b1d1d] hover:bg-[#5e1515]" : "bg-gray-300 cursor-not-allowed"}`}
               >
                 Simpan
               </button>
             </div>
-
           </div>
         </div>
       )}
-
     </div>
   )
 }

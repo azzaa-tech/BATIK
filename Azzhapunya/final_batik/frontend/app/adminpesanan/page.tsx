@@ -1,19 +1,29 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { ChangeEvent, useEffect, useRef, useState } from "react"
 import { Upload } from "lucide-react"
 import Sidebar from "../sidebarmin/page"
+import { apiRequest } from "@/lib/api"
 
-const dataProduk = [
-  { nama: "Blouse Batik 01", harga: "Rp 185.000", stok: 50, terjual: 32 },
-  { nama: "Kemeja Batik Pria", harga: "Rp 250.000", stok: 30, terjual: 21 },
-  { nama: "Syal Batik Sulawesi", harga: "Rp 95.000", stok: 12, terjual: 48 },
-  { nama: "Batik Parang Klasik", harga: "Rp 210.000", stok: 5, terjual: 15 },
-]
+type Product = {
+  id: number
+  nama: string
+  harga: number
+  stok: number
+  terjual?: number
+  deskripsi?: string
+  gambar?: string
+}
+
+type ProductErrors = Partial<{
+  nama: string
+  harga: string
+  stok: string
+}>
 
 export default function ProdukAdmin() {
 
-  const [produk, setProduk] = useState(dataProduk)
+  const [produk, setProduk] = useState<Product[]>([])
   const [showForm, setShowForm] = useState(false)
   const [preview, setPreview] = useState<string | null>(null)
 
@@ -26,24 +36,38 @@ export default function ProdukAdmin() {
     deskripsi: "",
   })
 
-  const [errors, setErrors] = useState<any>({})
+  const [errors, setErrors] = useState<ProductErrors>({})
+  const [loading, setLoading] = useState(false)
 
-  const set = (key: string) => (e: any) => {
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const response = await apiRequest<Product[]>("/products")
+        setProduk(response.data || [])
+      } catch (error) {
+        alert(error instanceof Error ? error.message : "Gagal mengambil produk")
+      }
+    }
+
+    loadProducts()
+  }, [])
+
+  const set = (key: keyof typeof form) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [key]: e.target.value })
     setErrors({ ...errors, [key]: "" })
   }
 
-  const handleFoto = (e: any) => {
-    const file = e.target.files[0]
+  const handleFoto = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
 
     if (file) {
       setPreview(URL.createObjectURL(file))
     }
   }
 
-  const handleSimpan = () => {
+  const handleSimpan = async () => {
 
-    const err: any = {}
+    const err: ProductErrors = {}
 
     if (!form.nama.trim()) err.nama = "Wajib diisi"
     if (!form.harga.trim()) err.harga = "Wajib diisi"
@@ -53,26 +77,53 @@ export default function ProdukAdmin() {
 
     if (Object.keys(err).length > 0) return
 
-    setProduk([
-      ...produk,
-      {
-        nama: form.nama,
-        harga: "Rp " + Number(form.harga).toLocaleString("id-ID"),
-        stok: Number(form.stok),
-        terjual: 0,
-      },
-    ])
+    try {
+      setLoading(true)
+      const response = await apiRequest<Product>("/products", {
+        method: "POST",
+        auth: true,
+        body: JSON.stringify({
+          nama: form.nama,
+          deskripsi: form.deskripsi || "-",
+          harga: Number(form.harga),
+          stok: Number(form.stok),
+          kategori: "Pria",
+          gambar: "/aset/produk.png",
+        }),
+      })
 
-    setForm({
-      nama: "",
-      harga: "",
-      stok: "",
-      deskripsi: "",
-    })
+      if (response.data) {
+        setProduk([response.data, ...produk])
+      } else {
+        setProduk([
+          ...produk,
+          {
+            id: Date.now(),
+            nama: form.nama,
+            harga: Number(form.harga),
+            stok: Number(form.stok),
+            terjual: 0,
+          },
+        ])
+      }
 
-    setPreview(null)
-    setShowForm(false)
+      setForm({
+        nama: "",
+        harga: "",
+        stok: "",
+        deskripsi: "",
+      })
+
+      setPreview(null)
+      setShowForm(false)
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Gagal menyimpan produk")
+    } finally {
+      setLoading(false)
+    }
   }
+
+  const format = (harga: number) => "Rp " + harga.toLocaleString("id-ID")
 
   // ================= FORM TAMBAH PRODUK =================
   if (showForm)
@@ -252,7 +303,7 @@ export default function ProdukAdmin() {
                 onClick={handleSimpan}
                 className="bg-[#c8956c] hover:bg-[#b5845a] text-white font-bold px-8 py-2.5 rounded-xl text-sm transition-colors"
               >
-                Simpan
+                {loading ? "Menyimpan..." : "Simpan"}
               </button>
 
             </div>
@@ -323,11 +374,11 @@ export default function ProdukAdmin() {
               </div>
 
               <p className="text-[#7b1d1d] font-bold text-base mb-1">
-                {p.harga}
+                {format(p.harga)}
               </p>
 
               <p className="text-xs text-gray-400 mb-4">
-                Terjual: {p.terjual} pcs
+                Terjual: {p.terjual || 0} pcs
               </p>
 
               <div className="flex gap-2">

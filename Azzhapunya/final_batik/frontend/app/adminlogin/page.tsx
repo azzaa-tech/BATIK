@@ -4,6 +4,9 @@ import { useState } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Eye, EyeOff } from "lucide-react"
+import { apiRequest, setAuthSession } from "@/lib/api"
+
+type LoginErrors = Partial<{ user: string; pass: string }>
 
 export default function SignInPage() {
 
@@ -11,10 +14,11 @@ export default function SignInPage() {
   const [user, setUser] = useState("")
   const [pass, setPass] = useState("")
   const [showPass, setShowPass] = useState(false)
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState<LoginErrors>({})
+  const [loading, setLoading] = useState(false)
 
-  const handleMasuk = () => {
-    const err = {}
+  const handleMasuk = async () => {
+    const err: LoginErrors = {}
 
     if (!user.trim()) err.user = "Username wajib diisi"
     if (!pass.trim()) err.pass = "Password wajib diisi"
@@ -23,12 +27,27 @@ export default function SignInPage() {
 
     if (Object.keys(err).length === 0) {
 
-      // LOGIN KHUSUS ADMIN
-      if (user === "admin" && pass === "admin123") {
-        router.push("/admin")
+      try {
+        setLoading(true)
+        const response = await apiRequest<{
+          token: string
+          user: { id: number; nama: string; email: string; role: string }
+        }>("/auth/login", {
+          method: "POST",
+          body: JSON.stringify({ email: user, password: pass }),
+        })
 
-      } else {
-        alert("Username atau password salah!")
+        if (!response.data || response.data.user.role !== "admin") {
+          alert("Akun ini bukan admin")
+          return
+        }
+
+        setAuthSession(response.data.token, response.data.user)
+        router.push("/admindash")
+      } catch (error) {
+        alert(error instanceof Error ? error.message : "Login admin gagal")
+      } finally {
+        setLoading(false)
       }
     }
   }
@@ -137,10 +156,10 @@ export default function SignInPage() {
 
         {/* Tombol Masuk */}
         <button
-          onClick={() => router.push("/admindash")}
+          onClick={handleMasuk}
           className="w-full bg-[#c8956c] hover:bg-[#b5845a] text-white font-bold py-2.5 rounded-full text-sm transition-colors shadow"
         >
-          Masuk
+          {loading ? "Memproses..." : "Masuk"}
         </button>
 
       </div>

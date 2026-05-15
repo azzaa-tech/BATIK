@@ -5,6 +5,14 @@ const errorMiddleware = (error, req, res, next) => {
   let message = error.message || "Terjadi kesalahan pada server";
   let responseStatus = statusCode;
 
+  console.error("[API ERROR]", {
+    method: req.method,
+    path: req.originalUrl,
+    message: error.message,
+    code: error.code,
+    stack: process.env.NODE_ENV === "production" ? undefined : error.stack,
+  });
+
   if (error.code === "P2002") {
     responseStatus = 400;
     const target = Array.isArray(error.meta && error.meta.target)
@@ -16,6 +24,11 @@ const errorMiddleware = (error, req, res, next) => {
   if (error.code === "P2025") {
     responseStatus = 404;
     message = "Data tidak ditemukan";
+  }
+
+  if (error.code === "P2003") {
+    responseStatus = 400;
+    message = "Relasi data tidak valid. Pastikan user/product/order terkait ada di database";
   }
 
   if (error instanceof multer.MulterError) {

@@ -1,20 +1,36 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { apiRequest } from "@/lib/api";
 
+type Product = {
+  id: number;
+  nama: string;
+  harga: number;
+  gambar: string;
+};
 
 export default function ProdukPage() {
-  const produkList = [
-    { nama: "Batik Lontara", harga: "Rp 185.000", img: "/aset/produk.png" },
-    { nama: "Batik Pria", harga: "Rp 220.000", img: "/aset/halut.png" },
-    { nama: "Syal Batik", harga: "Rp 90.000", img: "/aset/halu2.jpg" },
-    { nama: "Tas Batik", harga: "Rp 150.000", img: "/aset/produk.png" },
-    { nama: "Tas Batik", harga: "Rp 150.000", img: "/aset/produk.png" },
-    { nama: "Batik Lontara", harga: "Rp 185.000", img: "/aset/produk.png" },
-    { nama: "Batik Pria", harga: "Rp 220.000", img: "/aset/halut.png" },
-    { nama: "Syal Batik", harga: "Rp 90.000", img: "/aset/halu2.jpg" },
-  ];
+  const [produkList, setProdukList] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const response = await apiRequest<Product[]>("/products");
+        setProdukList(response.data || []);
+      } catch (error) {
+        alert(error instanceof Error ? error.message : "Gagal mengambil produk");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  const format = (n: number) => "Rp " + n.toLocaleString("id-ID");
 
   return (
     <div className="bg-white min-h-screen">
@@ -35,22 +51,24 @@ export default function ProdukPage() {
       {/* Grid Produk */}
       <div className="max-w-full px-2 sm:px-4 md:px-6 lg:px-8">
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {produkList.map((produk, i) => (
-            <Link href="/detail" key={i}>
+          {loading && <p className="col-span-full text-center">Memuat produk...</p>}
+          {!loading && produkList.length === 0 && (
+            <p className="col-span-full text-center">Produk belum tersedia.</p>
+          )}
+          {produkList.map((produk) => (
+            <Link href={`/detail?id=${produk.id}`} key={produk.id}>
               <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-1 hover:scale-105 transition cursor-pointer">
                 <img
-                  src={produk.img}
+                  src={produk.gambar || "/aset/produk.png"}
                   alt={produk.nama}
                   className="w-full h-36 sm:h-40 md:h-44 object-contain"
                 />
                 <div className="p-3 flex flex-col">
                   <h3 className="font-semibold text-sm sm:text-base">{produk.nama}</h3>
-                  <p className="text-[#7b1d1d] font-bold text-sm mt-1">{produk.harga}</p>
-                  <Link href="/detail">
-                    <button className="w-full mt-3 bg-[#7b1d1d] text-white py-2 rounded-lg text-sm hover:bg-[#5c1414] transition shadow-md hover:shadow-lg">
-                      + Keranjang
-                    </button>
-                  </Link>
+                  <p className="text-[#7b1d1d] font-bold text-sm mt-1">{format(produk.harga)}</p>
+                  <span className="block w-full mt-3 bg-[#7b1d1d] text-white py-2 rounded-lg text-sm text-center hover:bg-[#5c1414] transition shadow-md hover:shadow-lg">
+                    + Keranjang
+                  </span>
                 </div>
               </div>
             </Link>

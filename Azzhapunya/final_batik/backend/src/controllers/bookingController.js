@@ -1,7 +1,5 @@
 const { validationResult } = require("express-validator");
-const { PrismaClient } = require("@prisma/client");
-
-const prisma = new PrismaClient();
+const prisma = require("../utils/prisma");
 
 const createBooking = async (req, res, next) => {
   try {
@@ -16,6 +14,7 @@ const createBooking = async (req, res, next) => {
     }
 
     const { nama, anggota, tanggal, noWa, email } = req.body;
+    console.log("[BOOKING CREATE]", { nama, anggota, tanggal, noWa, email });
     const booking = await prisma.booking.create({
       data: {
         userId: req.user ? req.user.id : null,

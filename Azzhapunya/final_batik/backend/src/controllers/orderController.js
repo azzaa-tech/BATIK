@@ -1,7 +1,5 @@
 const { validationResult } = require("express-validator");
-const { PrismaClient } = require("@prisma/client");
-
-const prisma = new PrismaClient();
+const prisma = require("../utils/prisma");
 
 const parseItems = (items) => {
   if (Array.isArray(items)) {
@@ -67,6 +65,18 @@ const createOrder = async (req, res, next) => {
       });
     }
 
+    const invalidItems = parsedItems.filter((item) => {
+      return Number(item.productId) < 1 || Number(item.qty) < 1 || Number(item.harga) < 0;
+    });
+
+    if (invalidItems.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: "ProductId, qty, dan harga item harus valid",
+        errors: invalidItems,
+      });
+    }
+
     const {
       namaPenerima,
       alamat,
@@ -77,6 +87,40 @@ const createOrder = async (req, res, next) => {
       ongkir,
       total,
     } = req.body;
+    console.log("[ORDER CREATE]", {
+      userId: req.user.id,
+      itemCount: parsedItems.length,
+      subtotal,
+      ongkir,
+      total,
+    });
+
+    const productIds = parsedItems.map((item) => Number(item.productId));
+    const products = await prisma.product.findMany({
+      where: { id: { in: productIds } },
+      select: { id: true, stok: true },
+    });
+
+    if (products.length !== new Set(productIds).size) {
+      return res.status(400).json({
+        success: false,
+        message: "Ada produk pesanan yang tidak ditemukan",
+        errors: [],
+      });
+    }
+
+    const stockByProductId = new Map(products.map((product) => [product.id, product.stok]));
+    const outOfStockItems = parsedItems.filter((item) => {
+      return Number(item.qty) > (stockByProductId.get(Number(item.productId)) || 0);
+    });
+
+    if (outOfStockItems.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Stok produk tidak mencukupi",
+        errors: outOfStockItems,
+      });
+    }
 
     const order = await prisma.$transaction(async (tx) => {
       const createdOrder = await tx.order.create({
@@ -106,6 +150,13 @@ const createOrder = async (req, res, next) => {
           },
         },
       });
+
+      for (const item of parsedItems) {
+        await tx.product.update({
+          where: { id: Number(item.productId) },
+          data: { stok: { decrement: Number(item.qty) } },
+        });
+      }
 
       const cart = await tx.cart.findFirst({
         where: { userId: req.user.id },

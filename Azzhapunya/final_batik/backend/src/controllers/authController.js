@@ -1,9 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
-const { PrismaClient } = require("@prisma/client");
-
-const prisma = new PrismaClient();
+const prisma = require("../utils/prisma");
 
 const sanitizeUser = (user) => {
   const { password, ...safeUser } = user;
@@ -36,6 +34,7 @@ const register = async (req, res, next) => {
     }
 
     const { nama, email, password, noWa } = req.body;
+    console.log("[AUTH REGISTER]", { nama, email, hasNoWa: Boolean(noWa) });
     const existingUser = await prisma.user.findUnique({ where: { email } });
 
     if (existingUser) {
@@ -84,6 +83,7 @@ const login = async (req, res, next) => {
     }
 
     const { email, password } = req.body;
+    console.log("[AUTH LOGIN]", { email });
     const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {

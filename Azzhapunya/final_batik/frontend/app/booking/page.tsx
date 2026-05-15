@@ -4,16 +4,18 @@ import { useState } from "react"
 import { Clock, Users, Wallet, CheckSquare } from "lucide-react"
 import Nav from "../nav/page"
 import { useRouter } from "next/navigation"
+import { apiRequest } from "@/lib/api"
 
 export default function BookingPelatihan() {
 
   const [form, setForm] = useState({ nama: "", anggota: "", tanggal: "", noWa: "", email: "" })
   const [errors, setErrors] = useState<any>({})
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
 
   const fasilitas = ["Ruangan ber-AC", "Peralatan membatik lengkap", "Instruktur berpengalaman", "Snack & Minum"]
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const err: any = {}
     if (!form.nama.trim()) err.nama = "Nama wajib diisi"
     if (!form.anggota.trim()) err.anggota = "Jumlah anggota wajib diisi"
@@ -21,7 +23,24 @@ export default function BookingPelatihan() {
     if (!form.noWa.trim()) err.noWa = "No. WhatsApp wajib diisi"
     if (!form.email.trim()) err.email = "Email wajib diisi"
     setErrors(err)
-    if (Object.keys(err).length === 0) router.push("/bookingend")
+    if (Object.keys(err).length === 0) {
+      try {
+        setLoading(true)
+        await apiRequest("/bookings", {
+          method: "POST",
+          auth: true,
+          body: JSON.stringify({
+            ...form,
+            anggota: Number(form.anggota),
+          }),
+        })
+        router.push("/bookingend")
+      } catch (error) {
+        alert(error instanceof Error ? error.message : "Booking gagal")
+      } finally {
+        setLoading(false)
+      }
+    }
   }
 
   const set = (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -136,7 +155,7 @@ export default function BookingPelatihan() {
 
           <button onClick={handleSubmit}
             className="w-full bg-[#7b1d1d] hover:bg-[#5e1515] text-white font-bold py-3 rounded-xl text-sm transition-colors">
-            Kirim Booking
+            {loading ? "Mengirim..." : "Kirim Booking"}
           </button>
 
         </div>

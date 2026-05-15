@@ -3,21 +3,41 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from "next/navigation"
+import { apiRequest, setAuthSession } from "@/lib/api"
 
 export default function Page() {
 
     const [password, setPassword] = useState("")
     const [email, setEmail] = useState("")
+    const [loading, setLoading] = useState(false)
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
 
         if (email === "" || password === "") {
             alert("Please enter email and password first!")
             return
         }
 
-        // kalau sudah isi baru masuk
-        window.location.href = "/hal1"
+        try {
+            setLoading(true)
+            const response = await apiRequest<{
+                token: string
+                user: { id: number; nama: string; email: string; role: string }
+            }>("/auth/login", {
+                method: "POST",
+                body: JSON.stringify({ email, password }),
+            })
+
+            if (response.data) {
+                setAuthSession(response.data.token, response.data.user)
+            }
+
+            router.push("/hal1")
+        } catch (error) {
+            alert(error instanceof Error ? error.message : "Login gagal")
+        } finally {
+            setLoading(false)
+        }
     }
     const router = useRouter()
 
@@ -86,7 +106,7 @@ export default function Page() {
                         onClick={handleLogin}
                         className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold shadow-md transition"
                     >
-                        Sign in
+                        {loading ? "Memproses..." : "Sign in"}
                     </button>
 
                     {/* Divider */}

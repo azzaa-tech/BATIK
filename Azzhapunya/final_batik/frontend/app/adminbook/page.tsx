@@ -4,6 +4,18 @@ import { useState } from "react"
 import { CheckCircle, Clock, ChevronDown, X, Bell } from "lucide-react"
 import Sidebar from "../sidebarmin/page"
 
+type BookingStatus = "menunggu" | "konfirmasi" | "ditolak"
+type Booking = {
+    nama: string
+    tanggal: string
+    anggota: number
+    status: BookingStatus
+    noWa: string
+    email: string
+    catatan: string
+}
+type BookingDetail = Booking & { index: number }
+
 const dataAwal = [
     {
         nama: "Kelompok SMK 3",
@@ -34,9 +46,9 @@ const dataAwal = [
     },
 ]
 
-const statusOptions = ["menunggu", "konfirmasi", "ditolak"]
+const statusOptions: BookingStatus[] = ["menunggu", "konfirmasi", "ditolak"]
 
-const StatusBadge = ({ status }) => {
+const StatusBadge = ({ status }: { status: BookingStatus }) => {
     const map = {
         menunggu: { bg: "bg-yellow-100", text: "text-yellow-700", icon: <Clock size={12} />, label: "Menunggu" },
         konfirmasi: { bg: "bg-green-100", text: "text-green-700", icon: <CheckCircle size={12} />, label: "Dikonfirmasi" },
@@ -52,11 +64,11 @@ const StatusBadge = ({ status }) => {
 
 export default function BookingAdmin() {
 
-    const [list, setList] = useState(dataAwal)
-    const [detail, setDetail] = useState(null)   // booking yang dibuka detail-nya
-    const [dropdown, setDropdown] = useState(null)   // index yang buka dropdown status
+    const [list, setList] = useState<Booking[]>(dataAwal as Booking[])
+    const [detail, setDetail] = useState<BookingDetail | null>(null)   // booking yang dibuka detail-nya
+    const [dropdown, setDropdown] = useState<number | null>(null)   // index yang buka dropdown status
 
-    const ubahStatus = (i, status) => {
+    const ubahStatus = (i: number, status: BookingStatus) => {
         const baru = [...list]
         baru[i].status = status
         setList(baru)

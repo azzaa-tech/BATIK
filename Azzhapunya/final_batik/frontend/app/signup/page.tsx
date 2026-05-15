@@ -2,6 +2,8 @@
 
 import React, { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { apiRequest, setAuthSession } from "@/lib/api"
 
 export default function SignUp() {
   const [form, setForm] = useState({
@@ -10,20 +12,44 @@ export default function SignUp() {
     password: "",
     confirmPassword: "",
   })
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (form.password !== form.confirmPassword) {
       alert("Password dan konfirmasi password tidak cocok!")
       return
     }
-    // TODO: panggil API registrasi
-    console.log("Data registrasi:", form)
-    alert("Registrasi berhasil (simulasi)!")
+    try {
+      setLoading(true)
+      const response = await apiRequest<{
+        token: string
+        user: { id: number; nama: string; email: string; role: string }
+      }>("/auth/register", {
+        method: "POST",
+        body: JSON.stringify({
+          nama: form.name,
+          email: form.email,
+          password: form.password,
+        }),
+      })
+
+      if (response.data) {
+        setAuthSession(response.data.token, response.data.user)
+      }
+
+      alert(response.message)
+      router.push("/hal1")
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Registrasi gagal")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -88,13 +114,13 @@ export default function SignUp() {
             type="submit"
             className="w-full bg-red-700 text-white py-2 rounded-lg font-semibold hover:bg-red-800 transition-colors"
           >
-            Daftar
+            {loading ? "Memproses..." : "Daftar"}
           </button>
         </form>
 
         <p className="text-sm text-center mt-4">
           Sudah punya akun?{" "}
-          <Link href="/signin" className="text-red-700 font-medium hover:underline">
+          <Link href="/login" className="text-red-700 font-medium hover:underline">
             Sign In
           </Link>
         </p>

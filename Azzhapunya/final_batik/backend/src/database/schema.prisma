@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// USER
+// ============================================================
+model User {
+  id         Int       @id @default(autoincrement())
+  nama       String    @db.VarChar(191)
+  email      String    @unique @db.VarChar(191)
+  password   String    @db.VarChar(191)
+  noWa       String?   @db.VarChar(191)
+  role       String    @default("user") @db.VarChar(191)
+  createdAt  DateTime  @default(now()) @db.DateTime(3)
+
+  cart       Cart[]
+  orders     Order[]
+  bookings   Booking[]
+
+  @@map("user")
+}
+
+// ============================================================
+// PRODUCT
+// ============================================================
+model Product {
+  id         Int         @id @default(autoincrement())
+  nama       String      @db.VarChar(191)
+  deskripsi  String      @db.Text
+  harga      Int
+  stok       Int
+  kategori   String      @db.VarChar(191)
+  gambar     String      @db.VarChar(191)
+  createdAt  DateTime    @default(now()) @db.DateTime(3)
+
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  @@map("product")
+}
+
+// ============================================================
+// CART
+// ============================================================
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int
+  createdAt DateTime   @default(now()) @db.DateTime(3)
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+
+  @@index([userId])
+  @@map("cart")
+}
+
+// ============================================================
+// CART ITEM
+// ============================================================
+model CartItem {
+  id        Int     @id @default(autoincrement())
+  cartId    Int
+  productId Int
+  qty       Int
+  size      String  @db.VarChar(191)
+
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@unique([cartId, productId, size])
+  @@map("cartitem")
+}
+
+// ============================================================
+// ORDER
+// ============================================================
+model Order {
+  id                Int         @id @default(autoincrement())
+  userId            Int
+  namaPenerima      String      @db.VarChar(191)
+  alamat            String      @db.Text
+  telpon            String      @db.VarChar(191)
+  catatan           String?     @db.Text
+  metodePembayaran  String      @db.VarChar(191)
+  subtotal          Int
+  ongkir            Int
+  total             Int
+  buktiTransaksi    String      @db.VarChar(191)
+  status            String      @default("pending") @db.VarChar(191)
+  createdAt         DateTime    @default(now()) @db.DateTime(3)
+
+  user              User        @relation(fields: [userId], references: [id])
+  items             OrderItem[]
+
+  @@map("order")
+}
+
+// ============================================================
+// ORDER ITEM
+// ============================================================
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  qty       Int
+  size      String  @db.VarChar(191)
+  harga     Int
+
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@map("orderitem")
+}
+
+// ============================================================
+// BOOKING
+// ============================================================
+model Booking {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  nama      String   @db.VarChar(191)
+  anggota   Int
+  tanggal   DateTime @db.DateTime(3)
+  noWa      String   @db.VarChar(191)
+  email     String   @db.VarChar(191)
+  status    String   @default("pending") @db.VarChar(191)
+  createdAt DateTime @default(now()) @db.DateTime(3)
+
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("booking")
+}
+
+// ============================================================
+// PROMO CODE
+// ============================================================
+model PromoCode {
+  id     Int     @id @default(autoincrement())
+  kode   String  @unique @db.VarChar(191)
+  diskon Float
+  aktif  Boolean @default(true)
+
+  @@map("promocode")
+}

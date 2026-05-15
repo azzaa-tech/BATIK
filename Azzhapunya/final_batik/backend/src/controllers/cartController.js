@@ -1,7 +1,5 @@
 const { validationResult } = require("express-validator");
-const { PrismaClient } = require("@prisma/client");
-
-const prisma = new PrismaClient();
+const prisma = require("../utils/prisma");
 
 const getOrCreateCart = async (userId) => {
   const existingCart = await prisma.cart.findFirst({
@@ -55,6 +53,7 @@ const addToCart = async (req, res, next) => {
     }
 
     const { productId, qty, size } = req.body;
+    console.log("[CART ADD]", { userId: req.user.id, productId, qty, size });
     const product = await prisma.product.findUnique({
       where: { id: Number(productId) },
     });
@@ -91,6 +90,7 @@ const addToCart = async (req, res, next) => {
         },
       });
     }
+    console.log("[CART SAVED]", { userId: req.user.id, productId, qty, size });
 
     const updatedCart = await getCartWithItems(req.user.id);
 
@@ -234,7 +234,7 @@ const applyPromo = async (req, res, next) => {
     }
 
     const promo = await prisma.promoCode.findUnique({
-      where: { kode: req.body.kode },
+      where: { kode: String(req.body.kode).trim().toUpperCase() },
     });
 
     if (!promo || !promo.aktif) {

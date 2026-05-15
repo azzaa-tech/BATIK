@@ -9,13 +9,21 @@ const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const errorMiddleware = require("./middleware/errorMiddleware");
+const requestLogger = require("./middleware/requestLogger");
+const { testConnection } = require("./config/db");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(requestLogger);
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.get("/", (req, res) => {
@@ -34,8 +42,15 @@ app.use("/api", bookingRoutes);
 
 app.use(errorMiddleware);
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+app.listen(PORT, async () => {
+  console.log(`Server running on port ${PORT}`);
+
+  try {
+    await testConnection();
+    console.log("MySQL connection OK");
+  } catch (error) {
+    console.error("MySQL connection failed", error.message);
+  }
 });
 
 module.exports = app;
