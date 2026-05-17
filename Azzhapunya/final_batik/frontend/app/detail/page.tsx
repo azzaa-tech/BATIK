@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Minus, Plus } from "lucide-react"
 import Nav from "../nav/page"
 import Produk from "../produk/page"
+
 export default function ProductDetail() {
 
   const [qty, setQty] = useState(1)
@@ -11,28 +12,30 @@ export default function ProductDetail() {
 
   return (
     <div>
-      <div className="min-h-screen bg-[#f5f0eb] pb-28  mp-5 flex justify-center items-center">
+      <div className="min-h-screen bg-[#f5f0eb] pb-28 pt-24 sm:pt-28 px-4 sm:px-6 flex justify-center items-start md:items-center">
+        
         <Nav />
 
         {/* DETAIL PRODUK */}
-
-        <div className="bg-[#f0e8df] rounded-3xl p-6 max-w-4xl w-full flex flex-col md:flex-row gap-8 shadow-lg">
+        <div className="bg-[#f0e8df] rounded-3xl p-4 sm:p-6 md:p-8 max-w-4xl w-full flex flex-col md:flex-row gap-6 md:gap-8 shadow-lg">
 
           {/* GAMBAR */}
-          <img
-            src="/aset/produk.png"
-            alt="produk"
-            className="w-full md:w-[280px] h-[350px] object-cover rounded-2xl"
-          />
+          <div className="w-full md:w-[280px] flex-shrink-0">
+            <img
+              src="/aset/produk.png"
+              alt="produk"
+              className="w-full md:w-[280px] h-[280px] sm:h-[350px] object-cover rounded-2xl"
+            />
+          </div>
 
           {/* DETAIL */}
           <div className="flex-1">
 
-            <h1 className="text-3xl font-bold text-[#2d0000] mb-4">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#2d0000] mb-4 leading-tight">
               Blouse Batik 01
             </h1>
 
-            <p className="text-sm text-gray-600 leading-7 mb-6">
+            <p className="text-sm sm:text-base text-gray-600 leading-7 mb-6">
               Batik premium khas Sulawesi Selatan dengan desain elegan,
               nyaman digunakan untuk acara formal maupun casual.
             </p>
@@ -48,10 +51,11 @@ export default function ProductDetail() {
                 <button
                   key={i}
                   onClick={() => setSize(item)}
-                  className={`px-5 py-2 rounded-full border transition ${size === item
-                      ? "bg-[#7b1d1d] text-white"
-                      : "bg-white hover:bg-[#7b1d1d] hover:text-white"
-                    }`}
+                  className={`px-4 sm:px-5 py-2 rounded-full border text-sm sm:text-base transition ${
+                    size === item
+                      ? "bg-[#7b1d1d] text-white border-[#7b1d1d]"
+                      : "bg-white hover:bg-[#7b1d1d] hover:text-white border-gray-200"
+                  }`}
                 >
                   {item}
                 </button>
@@ -67,19 +71,25 @@ export default function ProductDetail() {
             )}
 
             {/* QTY */}
-            <div className="flex items-center gap-5 mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5 mb-8">
 
-              <div className="flex items-center gap-4 bg-white px-4 py-2 rounded-xl">
+              <div className="flex items-center justify-between sm:justify-start gap-4 bg-white px-4 py-2 rounded-xl w-full sm:w-fit">
 
-                <button onClick={() => qty > 1 && setQty(qty - 1)}>
+                <button
+                  onClick={() => qty > 1 && setQty(qty - 1)}
+                  className="hover:opacity-70 transition"
+                >
                   <Minus size={16} />
                 </button>
 
-                <span className="font-semibold">
+                <span className="font-semibold text-base min-w-[20px] text-center">
                   {qty}
                 </span>
 
-                <button onClick={() => setQty(qty + 1)}>
+                <button
+                  onClick={() => setQty(qty + 1)}
+                  className="hover:opacity-70 transition"
+                >
                   <Plus size={16} />
                 </button>
 
@@ -91,8 +101,8 @@ export default function ProductDetail() {
             </div>
 
             {/* BUTTON */}
-            <a href='/cart'>
-              <button className="bg-[#7b1d1d] text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90">
+            <a href='/cart' className="block w-full sm:w-fit">
+              <button className="w-full sm:w-auto bg-[#7b1d1d] text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition">
                 Add to Cart
               </button>
             </a>
@@ -101,6 +111,7 @@ export default function ProductDetail() {
         </div>
       </div>
       <Produk />
+
     </div>
   )
 }

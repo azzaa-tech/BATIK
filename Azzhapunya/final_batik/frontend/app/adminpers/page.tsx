@@ -88,32 +88,33 @@ export default function TabelPesanan() {
     <div className="min-h-screen bg-gray-50 flex font-sans">
       <Sidebar />
 
-      <div className="flex-1 md:ml-64 p-4 sm:p-6">
+      <div className="flex-1 md:ml-64 w-full p-3 sm:p-5 md:p-6 overflow-x-hidden">
+        <div className="w-full bg-[#7b1d1d] rounded-2xl px-4 py-4 sm:px-6 sm:py-5 mb-5 sm:mb-6 flex items-start sm:items-center gap-3 sm:gap-4 shadow-md">
+          <span className="text-2xl sm:text-3xl">👋</span>
 
-        {/* Greeting Banner */}
-        <div className="w-full bg-[#7b1d1d] rounded-2xl px-5 py-4 sm:px-6 sm:py-5 mb-6 flex items-start sm:items-center gap-4 shadow-md">
-          <span className="text-2xl sm:text-3xl mt-0.5 sm:mt-0">👋</span>
-          <div>
-            <h1 className="text-white font-bold text-lg sm:text-xl leading-tight">Hai, Admin!</h1>
-            <p className="text-white/70 text-xs sm:text-sm mt-0.5">
+          <div className="min-w-0">
+            <h1 className="text-white font-bold text-base sm:text-xl leading-tight">
+              Hai, Admin!
+            </h1>
+            <p className="text-white/70 text-xs sm:text-sm mt-1 leading-relaxed">
               Selamat bekerja — semoga harimu produktif dan menyenangkan.
             </p>
           </div>
         </div>
 
-        {/* Tabel Pesanan */}
-        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-visible pb-24 md:pb-20">
+          <div className="px-4 sm:px-5 py-4 border-b border-gray-100 flex items-center justify-between gap-3">
+            <h2 className="font-semibold text-gray-800 text-sm sm:text-base">
+              Daftar Pesanan
+            </h2>
 
-          <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-            <h2 className="font-semibold text-gray-800 text-sm sm:text-base">Daftar Pesanan</h2>
-            <span className="text-xs text-gray-400 bg-gray-50 px-3 py-1 rounded-full border border-gray-100">
+            <span className="text-xs text-gray-400 bg-gray-50 px-3 py-1 rounded-full border border-gray-100 whitespace-nowrap">
               {orders.length} pesanan
             </span>
           </div>
 
-          {/* Desktop Table */}
-          <div className="hidden md:block overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="hidden md:block overflow-x-auto overflow-y-visible pb-20">
+            <table className="w-full min-w-[950px] text-sm">
               <thead>
                 <tr className="text-gray-400 text-left border-b border-gray-100 bg-gray-50/60">
                   <th className="px-4 py-3 font-medium">ID</th>
@@ -128,14 +129,29 @@ export default function TabelPesanan() {
                   <th className="px-4 py-3 font-medium">Aksi</th>
                 </tr>
               </thead>
+
               <tbody>
                 {orders.map((o) => (
-                  <tr key={o.id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/60 transition-colors">
-                    <td className="px-4 py-3 text-gray-400 text-xs font-mono">{o.id}</td>
-                    <td className="px-4 py-3 font-medium text-gray-700">{o.customer}</td>
-                    <td className="px-4 py-3 text-gray-500 text-xs">{o.telpon}</td>
+                  <tr
+                    key={o.id}
+                    className="border-b border-gray-50 last:border-0 hover:bg-gray-50/60 transition-colors"
+                  >
+                    <td className="px-4 py-3 text-gray-400 text-xs font-mono">
+                      {o.id}
+                    </td>
+                    <td className="px-4 py-3 font-medium text-gray-700">
+                      {o.customer}
+                    </td>
+                    <td className="px-4 py-3 text-gray-500 text-xs">
+                      {o.telpon}
+                    </td>
                     <td className="px-4 py-3 text-gray-500">{o.product}</td>
-                    <td className="px-4 py-3 text-gray-500 text-xs max-w-[130px] truncate" title={o.alamat}>{o.alamat}</td>
+                    <td
+                      className="px-4 py-3 text-gray-500 text-xs max-w-[130px] truncate"
+                      title={o.alamat}
+                    >
+                      {o.alamat}
+                    </td>
                     <td className="px-4 py-3">
                       <span className="text-xs bg-orange-50 text-orange-600 border border-orange-200 px-2 py-0.5 rounded-full font-medium whitespace-nowrap">
                         {o.ekspedisi}
@@ -146,32 +162,44 @@ export default function TabelPesanan() {
                         {o.pembayaran.split(" ")[0]}
                       </span>
                     </td>
-                    <td className="px-4 py-3 font-semibold text-red-500 whitespace-nowrap">{o.total}</td>
+                    <td className="px-4 py-3 font-semibold text-red-500 whitespace-nowrap">
+                      {o.total}
+                    </td>
+
                     <td className="px-4 py-3 relative">
                       <button
-                        onClick={() => setOpenDropdown(openDropdown === o.id ? null : o.id)}
+                        onClick={() =>
+                          setOpenDropdown(openDropdown === o.id ? null : o.id)
+                        }
                         className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full cursor-pointer hover:opacity-80 transition-opacity whitespace-nowrap ${statusStyle[o.status]}`}
                       >
                         {statusIcon[o.status]} {o.status}
                         <span className="opacity-50 text-[10px]">▾</span>
                       </button>
+
                       {openDropdown === o.id && (
-                        <div className="absolute left-0 top-12 z-20 bg-white border border-gray-100 rounded-xl shadow-lg py-1 min-w-[160px]">
+                        <div className="absolute right-0 top-10 z-50 bg-white border border-gray-100 rounded-xl shadow-lg py-1 min-w-[170px]">
                           {statusOptions.map((opt) => (
                             <button
                               key={opt}
                               onClick={() => handleStatusChange(o.id, opt)}
                               className="w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-gray-50 transition-colors"
                             >
-                              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full ${statusStyle[opt]}`}>
+                              <span
+                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full ${statusStyle[opt]}`}
+                              >
                                 {statusIcon[opt]} {opt}
                               </span>
-                              {o.status === opt && <span className="ml-auto text-green-500">✓</span>}
+
+                              {o.status === opt && (
+                                <span className="ml-auto text-green-500">✓</span>
+                              )}
                             </button>
                           ))}
                         </div>
                       )}
                     </td>
+
                     <td className="px-4 py-3">
                       <button
                         onClick={() => setDetailOrder(o)}
@@ -187,58 +215,93 @@ export default function TabelPesanan() {
             </table>
           </div>
 
-          {/* Mobile Cards */}
-          <div className="md:hidden divide-y divide-gray-100">
+          <div className="md:hidden divide-y divide-gray-100 pb-24">
             {orders.map((o) => (
-              <div key={o.id} className="p-4 space-y-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <p className="font-bold text-gray-800 text-sm">{o.customer}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">{o.id} · {o.telpon}</p>
+              <div key={o.id} className="p-4 space-y-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-bold text-gray-800 text-sm break-words">
+                      {o.customer}
+                    </p>
+
+                    <p className="text-xs text-gray-400 mt-1 break-words">
+                      {o.id} · {o.telpon}
+                    </p>
                   </div>
-                  <span className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${statusStyle[o.status]}`}>
+
+                  <span
+                    className={`inline-flex items-center gap-1 text-[10px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 whitespace-nowrap ${statusStyle[o.status]}`}
+                  >
                     {statusIcon[o.status]} {o.status}
                   </span>
                 </div>
 
-                <p className="text-xs text-gray-600 font-medium">{o.product}</p>
-                <p className="text-xs text-gray-400 truncate">📍 {o.alamat}</p>
+                <div className="space-y-1.5">
+                  <p className="text-xs text-gray-600 font-medium break-words">
+                    {o.product}
+                  </p>
 
-                <div className="flex gap-2 flex-wrap">
-                  <span className="text-xs bg-orange-50 text-orange-600 border border-orange-200 px-2 py-0.5 rounded-full">{o.ekspedisi}</span>
-                  <span className="text-xs bg-blue-50 text-blue-600 border border-blue-200 px-2 py-0.5 rounded-full">{o.pembayaran.split(" ")[0]}</span>
+                  <p className="text-xs text-gray-400 leading-relaxed break-words">
+                    📍 {o.alamat}
+                  </p>
                 </div>
 
-                <div className="flex items-center justify-between pt-1">
-                  <span className="font-semibold text-red-500 text-sm">{o.total}</span>
+                <div className="flex gap-2 flex-wrap">
+                  <span className="text-xs bg-orange-50 text-orange-600 border border-orange-200 px-2 py-0.5 rounded-full">
+                    {o.ekspedisi}
+                  </span>
+
+                  <span className="text-xs bg-blue-50 text-blue-600 border border-blue-200 px-2 py-0.5 rounded-full">
+                    {o.pembayaran.split(" ")[0]}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between gap-3 pt-3 border-t border-gray-100">
+                  <div>
+                    <p className="text-xs text-gray-400 mb-1">Total</p>
+                    <span className="font-semibold text-red-500 text-sm">
+                      {o.total}
+                    </span>
+                  </div>
+
                   <div className="flex items-center gap-2">
-                    <div className="relative">
+                    <div className="relative z-30">
                       <button
-                        onClick={() => setOpenDropdown(openDropdown === o.id ? null : o.id)}
-                        className="text-xs border border-gray-200 rounded-lg px-3 py-1.5 text-gray-600 hover:bg-gray-50 flex items-center gap-1"
+                        onClick={() =>
+                          setOpenDropdown(openDropdown === o.id ? null : o.id)
+                        }
+                        className="text-xs border border-gray-200 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-50 flex items-center gap-1 whitespace-nowrap"
                       >
-                        Ubah Status <span className="text-[10px] opacity-50">▾</span>
+                        Ubah Status
+                        <span className="text-[10px] opacity-50">▾</span>
                       </button>
+
                       {openDropdown === o.id && (
-                        <div className="absolute right-0 top-9 z-20 bg-white border border-gray-100 rounded-xl shadow-lg py-1 min-w-[160px]">
+                        <div className="absolute right-0 top-10 z-50 bg-white border border-gray-100 rounded-xl shadow-lg py-1 min-w-[170px]">
                           {statusOptions.map((opt) => (
                             <button
                               key={opt}
                               onClick={() => handleStatusChange(o.id, opt)}
                               className="w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-gray-50 transition-colors"
                             >
-                              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full ${statusStyle[opt]}`}>
+                              <span
+                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full ${statusStyle[opt]}`}
+                              >
                                 {statusIcon[opt]} {opt}
                               </span>
-                              {o.status === opt && <span className="ml-auto text-green-500">✓</span>}
+
+                              {o.status === opt && (
+                                <span className="ml-auto text-green-500">✓</span>
+                              )}
                             </button>
                           ))}
                         </div>
                       )}
                     </div>
+
                     <button
                       onClick={() => setDetailOrder(o)}
-                      className="p-1.5 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors"
+                      className="w-9 h-9 flex items-center justify-center rounded-xl text-blue-500 bg-blue-50 hover:bg-blue-100 transition-colors"
                     >
                       <Eye size={15} />
                     </button>
@@ -247,23 +310,28 @@ export default function TabelPesanan() {
               </div>
             ))}
           </div>
-
         </div>
       </div>
 
-      {/* Modal Detail */}
       {detailOrder && (
         <div
           className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4"
           onClick={(e) => e.target === e.currentTarget && setDetailOrder(null)}
         >
-          <div className="bg-white w-full sm:max-w-sm sm:rounded-2xl rounded-t-2xl p-6 shadow-2xl">
+          <div className="bg-white w-full sm:max-w-md max-h-[88vh] overflow-y-auto sm:rounded-2xl rounded-t-2xl p-5 sm:p-6 shadow-2xl">
             <div className="flex justify-center mb-3 sm:hidden">
               <div className="w-10 h-1 rounded-full bg-gray-200" />
             </div>
+
             <div className="flex items-center justify-between mb-5">
-              <h3 className="font-bold text-gray-800 text-base">Detail Pesanan</h3>
-              <button onClick={() => setDetailOrder(null)} className="text-gray-400 hover:text-gray-600">
+              <h3 className="font-bold text-gray-800 text-base">
+                Detail Pesanan
+              </h3>
+
+              <button
+                onClick={() => setDetailOrder(null)}
+                className="text-gray-400 hover:text-gray-600"
+              >
                 <X size={20} />
               </button>
             </div>
@@ -280,14 +348,26 @@ export default function TabelPesanan() {
                 { label: "Catatan", value: detailOrder.catatan },
                 { label: "Total", value: detailOrder.total },
               ].map(({ label, value }) => (
-                <div key={label} className="flex justify-between items-start gap-4">
-                  <span className="text-gray-400 flex-shrink-0">{label}</span>
-                  <span className="font-semibold text-gray-800 text-right">{value}</span>
+                <div
+                  key={label}
+                  className="flex justify-between items-start gap-4"
+                >
+                  <span className="text-gray-400 flex-shrink-0 text-xs sm:text-sm">
+                    {label}
+                  </span>
+
+                  <span className="font-semibold text-gray-800 text-right text-xs sm:text-sm break-words max-w-[60%]">
+                    {value}
+                  </span>
                 </div>
               ))}
+
               <div className="flex justify-between items-center pt-2 border-t border-gray-100">
-                <span className="text-gray-400">Status</span>
-                <span className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full ${statusStyle[detailOrder.status]}`}>
+                <span className="text-gray-400 text-xs sm:text-sm">Status</span>
+
+                <span
+                  className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${statusStyle[detailOrder.status]}`}
+                >
                   {statusIcon[detailOrder.status]} {detailOrder.status}
                 </span>
               </div>
@@ -304,7 +384,10 @@ export default function TabelPesanan() {
       )}
 
       {openDropdown && (
-        <div className="fixed inset-0 z-10" onClick={() => setOpenDropdown(null)} />
+        <div
+          className="fixed inset-0 z-20"
+          onClick={() => setOpenDropdown(null)}
+        />
       )}
     </div>
   );

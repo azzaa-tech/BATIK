@@ -1,8 +1,21 @@
 
 
 export default function Footer() {
+
+  const banks = [
+    { name: "BCA", img: "/aset/bca.jpg" },
+    { name: "Mandiri", img: "/aset/mandiri.jpg" },
+    { name: "BNI", img: "/aset/bni.jpg" },
+    { name: "BRI", img: "/aset/bri.jpg" },
+  ];
+
+  const shipping = [
+    { name: "JNE", img: "/aset/jne.jpg" },
+    { name: "J&T", img: "/aset/jnt.jpg" },
+  ];
+
   return (
-    <footer className="bg-[#1a1a1a] text-white px-8 py-12 font-sans">
+    <footer className="bg-[#4c0202] text-white px-8 py-12 font-sans">
       <div className="max-w-5xl mx-auto flex flex-wrap gap-10">
 
         {/* CONTACT INFO */}
@@ -41,26 +54,44 @@ export default function Footer() {
         </div>
 
         {/* PEMBAYARAN */}
-        <div className="flex-1 min-w-[200px]">
-          <h3 className="font-bold text-sm tracking-widest mb-5">PEMBAYARAN</h3>
+        <div>
+          <h3 className="font-bold text-sm tracking-widest mb-5">
+            PEMBAYARAN
+          </h3>
+
           <div className="grid grid-cols-2 gap-3">
-            {["BCA", "Mandiri", "BNI", "BRI", "QRIS", "Transfer"].map((bank, i) => (
-              <div key={i}
-                className="bg-[#2a2a2a] border border-gray-700 rounded-lg px-4 py-3 flex items-center justify-center">
-                <span className="text-xs font-bold text-gray-300">{bank}</span>
+            {banks.map((bank, i) => (
+              <div
+                key={i}
+                className="bg-white rounded-xl px-4 py-3 h-16 flex items-center justify-center shadow-md hover:scale-105 transition-all duration-300"
+              >
+                <img
+                  src={bank.img}
+                  alt={bank.name}
+                  className="max-h-9 max-w-full object-contain"
+                />
               </div>
             ))}
           </div>
         </div>
 
         {/* PENGIRIMAN */}
-        <div className="flex-1 min-w-[160px]">
-          <h3 className="font-bold text-sm tracking-widest mb-5">PENGIRIMAN</h3>
-          <div className="flex flex-col gap-3">
-            {["JNE", "J&T", "SiCepat", "Pos Indonesia"].map((kurir, i) => (
-              <div key={i}
-                className="bg-[#2a2a2a] border border-gray-700 rounded-lg px-4 py-3 flex items-center justify-center">
-                <span className="text-xs font-bold text-gray-300">{kurir}</span>
+        <div className="sm:col-span-2 lg:col-span-1">
+          <h3 className="font-bold text-sm tracking-widest mb-5">
+            PENGIRIMAN
+          </h3>
+
+          <div className="grid grid-cols-2 lg:grid-cols-1 gap-3">
+            {shipping.map((kurir, i) => (
+              <div
+                key={i}
+                className="bg-white rounded-xl px-4 py-4 h-20 flex items-center justify-center shadow-md hover:scale-105 transition-all duration-300"
+              >
+                <img
+                  src={kurir.img}
+                  alt={kurir.name}
+                  className="max-h-10 max-w-full object-contain"
+                />
               </div>
             ))}
           </div>
