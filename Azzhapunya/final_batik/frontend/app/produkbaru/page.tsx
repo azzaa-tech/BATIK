@@ -50,6 +50,7 @@ export default function ProdukPage() {
 
       {/* Grid Produk */}
       <div className="max-w-full px-2 sm:px-4 md:px-6 lg:px-8">
+<<<<<<< HEAD
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {loading && <p className="col-span-full text-center">Memuat produk...</p>}
           {!loading && produkList.length === 0 && (
@@ -57,6 +58,11 @@ export default function ProdukPage() {
           )}
           {produkList.map((produk) => (
             <Link href={`/detail?id=${produk.id}`} key={produk.id}>
+=======
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-6 gap-4gap-4">
+          {produkList.map((produk, i) => (
+            <Link href="/detail" key={i}>
+>>>>>>> cbcca701ce283e0e67e94b56139fc102a1fd170b
               <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-1 hover:scale-105 transition cursor-pointer">
                 <img
                   src={produk.gambar || "/aset/produk.png"}
