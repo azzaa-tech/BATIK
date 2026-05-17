@@ -15,6 +15,7 @@ model User {
   noWa      String?
   role      String    @default("user")
   createdAt DateTime  @default(now())
+
   orders    Order[]
   bookings  Booking[]
   cart      Cart[]
@@ -31,6 +32,7 @@ model Product {
   kategori   String
   gambar     String
   createdAt  DateTime    @default(now())
+
   cartItems  CartItem[]
   orderItems OrderItem[]
 
@@ -40,8 +42,10 @@ model Product {
 model Cart {
   id        Int        @id @default(autoincrement())
   userId    Int
+
   user      User       @relation(fields: [userId], references: [id])
   items     CartItem[]
+
   createdAt DateTime   @default(now())
 
   @@map("cart")
@@ -50,31 +54,42 @@ model Cart {
 model CartItem {
   id        Int     @id @default(autoincrement())
   cartId    Int
-  cart      Cart    @relation(fields: [cartId], references: [id])
   productId Int
-  product   Product @relation(fields: [productId], references: [id])
+
   qty       Int
   size      String
+
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 
   @@map("cartitem")
 }
 
 model Order {
-  id                Int         @id @default(autoincrement())
-  userId            Int
-  user              User        @relation(fields: [userId], references: [id])
-  namaPenerima      String
-  alamat            String
-  telpon            String
-  catatan           String?
-  metodePembayaran  String
-  subtotal          Int
-  ongkir            Int
-  total             Int
-  buktiTransaksi    String
-  status            String      @default("pending")
-  createdAt         DateTime    @default(now())
-  items             OrderItem[]
+  id                 Int         @id @default(autoincrement())
+  userId             Int
+
+  namaPenerima       String
+  alamat             String
+  telpon             String
+  catatan            String?
+
+  metodePembayaran   String
+
+  subtotal           Int
+  diskon             Int         @default(0)
+  ongkir             Int
+  total              Int
+
+  buktiTransaksi     String
+
+  status             String      @default("pending")
+
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @default(now()) @updatedAt
+
+  user               User        @relation(fields: [userId], references: [id])
+  items              OrderItem[]
 
   @@map("order")
 }
@@ -82,35 +97,44 @@ model Order {
 model OrderItem {
   id        Int     @id @default(autoincrement())
   orderId   Int
-  order     Order   @relation(fields: [orderId], references: [id])
   productId Int
-  product   Product @relation(fields: [productId], references: [id])
+
   qty       Int
   size      String
   harga     Int
+
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 
   @@map("orderitem")
 }
 
 model Booking {
   id        Int      @id @default(autoincrement())
+
   userId    Int?
-  user      User?    @relation(fields: [userId], references: [id])
+
   nama      String
   anggota   Int
   tanggal   DateTime
   noWa      String
   email     String
-  status    String   @default("pending")
+
+  status    String   @default("menunggu")
+
   createdAt DateTime @default(now())
+
+  user      User?    @relation(fields: [userId], references: [id])
 
   @@map("booking")
 }
 
 model PromoCode {
   id     Int     @id @default(autoincrement())
+
   kode   String  @unique
   diskon Float
+
   aktif  Boolean @default(true)
 
   @@map("promocode")

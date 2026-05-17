@@ -388,9 +388,32 @@ export default function ProdukAdmin() {
                 </button>
 
                 <button
-                  onClick={() =>
-                    setProduk(produk.filter((_, idx) => idx !== i))
-                  }
+                  onClick={async () => {
+                    const confirmDelete = confirm(
+                      "Yakin ingin menghapus produk?"
+                    )
+
+                    if (!confirmDelete) return
+
+                    try {
+                      await apiRequest(`/products/${p.id}`, {
+                        method: "DELETE",
+                        auth: true,
+                      })
+
+                      setProduk(
+                        produk.filter((item) => item.id !== p.id)
+                      )
+
+                      alert("Produk berhasil dihapus")
+                    } catch (error) {
+                      alert(
+                        error instanceof Error
+                          ? error.message
+                          : "Gagal menghapus produk"
+                      )
+                    }
+                  }}
                   className="flex-1 text-xs border border-red-100 rounded-lg py-2 hover:bg-red-50 text-red-500"
                 >
                   Hapus

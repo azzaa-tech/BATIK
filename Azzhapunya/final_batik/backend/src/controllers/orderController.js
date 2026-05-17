@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
 const prisma = require("../utils/prisma");
+const { db } = require("../config/db");
 
 const parseItems = (items) => {
   if (Array.isArray(items)) {
@@ -54,19 +55,29 @@ const createOrder = async (req, res, next) => {
     }
 
     const requiredItemFields = parsedItems.every((item) => {
-      return item.productId && item.qty && item.size && item.harga !== undefined;
+      return (
+        item.productId &&
+        item.qty &&
+        item.size &&
+        item.harga !== undefined
+      );
     });
 
     if (!requiredItemFields) {
       return res.status(400).json({
         success: false,
-        message: "Setiap item wajib memiliki productId, qty, size, dan harga",
+        message:
+          "Setiap item wajib memiliki productId, qty, size, dan harga",
         errors: [],
       });
     }
 
     const invalidItems = parsedItems.filter((item) => {
-      return Number(item.productId) < 1 || Number(item.qty) < 1 || Number(item.harga) < 0;
+      return (
+        Number(item.productId) < 1 ||
+        Number(item.qty) < 1 ||
+        Number(item.harga) < 0
+      );
     });
 
     if (invalidItems.length > 0) {
@@ -84,34 +95,59 @@ const createOrder = async (req, res, next) => {
       catatan,
       metodePembayaran,
       subtotal,
+      diskon,
       ongkir,
       total,
     } = req.body;
+
     console.log("[ORDER CREATE]", {
       userId: req.user.id,
       itemCount: parsedItems.length,
       subtotal,
+      diskon,
       ongkir,
       total,
     });
 
-    const productIds = parsedItems.map((item) => Number(item.productId));
+    const productIds = parsedItems.map((item) =>
+      Number(item.productId)
+    );
+
     const products = await prisma.product.findMany({
-      where: { id: { in: productIds } },
-      select: { id: true, stok: true },
+      where: {
+        id: {
+          in: productIds,
+        },
+      },
+      select: {
+        id: true,
+        stok: true,
+      },
     });
 
     if (products.length !== new Set(productIds).size) {
       return res.status(400).json({
         success: false,
-        message: "Ada produk pesanan yang tidak ditemukan",
+        message:
+          "Ada produk pesanan yang tidak ditemukan",
         errors: [],
       });
     }
 
-    const stockByProductId = new Map(products.map((product) => [product.id, product.stok]));
+    const stockByProductId = new Map(
+      products.map((product) => [
+        product.id,
+        product.stok,
+      ])
+    );
+
     const outOfStockItems = parsedItems.filter((item) => {
-      return Number(item.qty) > (stockByProductId.get(Number(item.productId)) || 0);
+      return (
+        Number(item.qty) >
+        (stockByProductId.get(
+          Number(item.productId)
+        ) || 0)
+      );
     });
 
     if (outOfStockItems.length > 0) {
@@ -122,54 +158,74 @@ const createOrder = async (req, res, next) => {
       });
     }
 
-    const order = await prisma.$transaction(async (tx) => {
-      const createdOrder = await tx.order.create({
-        data: {
-          userId: req.user.id,
-          namaPenerima,
-          alamat,
-          telpon,
-          catatan,
-          metodePembayaran,
-          subtotal: Number(subtotal),
-          ongkir: Number(ongkir),
-          total: Number(total),
-          buktiTransaksi: `/uploads/bukti/${req.file.filename}`,
-          items: {
-            create: parsedItems.map((item) => ({
-              productId: Number(item.productId),
-              qty: Number(item.qty),
-              size: item.size,
-              harga: Number(item.harga),
-            })),
+    const order = await prisma.$transaction(
+      async (tx) => {
+        const createdOrder = await tx.order.create({
+          data: {
+            userId: req.user.id,
+            namaPenerima,
+            alamat,
+            telpon,
+            catatan,
+            metodePembayaran,
+
+            subtotal: Number(subtotal),
+            diskon: Number(diskon || 0),
+            ongkir: Number(ongkir),
+            total: Number(total),
+
+            buktiTransaksi: `/uploads/bukti/${req.file.filename}`,
+
+            items: {
+              create: parsedItems.map((item) => ({
+                productId: Number(item.productId),
+                qty: Number(item.qty),
+                size: item.size,
+                harga: Number(item.harga),
+              })),
+            },
           },
-        },
-        include: {
-          items: {
-            include: { product: true },
+
+          include: {
+            items: {
+              include: {
+                product: true,
+              },
+            },
           },
-        },
-      });
-
-      for (const item of parsedItems) {
-        await tx.product.update({
-          where: { id: Number(item.productId) },
-          data: { stok: { decrement: Number(item.qty) } },
         });
-      }
 
-      const cart = await tx.cart.findFirst({
-        where: { userId: req.user.id },
-      });
+        for (const item of parsedItems) {
+          await tx.product.update({
+            where: {
+              id: Number(item.productId),
+            },
 
-      if (cart) {
-        await tx.cartItem.deleteMany({
-          where: { cartId: cart.id },
+            data: {
+              stok: {
+                decrement: Number(item.qty),
+              },
+            },
+          });
+        }
+
+        const cart = await tx.cart.findFirst({
+          where: {
+            userId: req.user.id,
+          },
         });
-      }
 
-      return createdOrder;
-    });
+        if (cart) {
+          await tx.cartItem.deleteMany({
+            where: {
+              cartId: cart.id,
+            },
+          });
+        }
+
+        return createdOrder;
+      }
+    );
 
     return res.status(201).json({
       success: true,
@@ -184,13 +240,21 @@ const createOrder = async (req, res, next) => {
 const getMyOrders = async (req, res, next) => {
   try {
     const orders = await prisma.order.findMany({
-      where: { userId: req.user.id },
+      where: {
+        userId: req.user.id,
+      },
+
       include: {
         items: {
-          include: { product: true },
+          include: {
+            product: true,
+          },
         },
       },
-      orderBy: { createdAt: "desc" },
+
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     return res.status(200).json({
@@ -210,9 +274,12 @@ const getOrderById = async (req, res, next) => {
         id: Number(req.params.id),
         userId: req.user.id,
       },
+
       include: {
         items: {
-          include: { product: true },
+          include: {
+            product: true,
+          },
         },
       },
     });
@@ -238,9 +305,12 @@ const getOrderById = async (req, res, next) => {
 const getAllOrders = async (req, res, next) => {
   try {
     const { status } = req.query;
+
     const where = status ? { status } : {};
+
     const orders = await prisma.order.findMany({
       where,
+
       include: {
         user: {
           select: {
@@ -252,11 +322,17 @@ const getAllOrders = async (req, res, next) => {
             createdAt: true,
           },
         },
+
         items: {
-          include: { product: true },
+          include: {
+            product: true,
+          },
         },
       },
-      orderBy: { createdAt: "desc" },
+
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     return res.status(200).json({
@@ -282,8 +358,14 @@ const updateOrderStatus = async (req, res, next) => {
     }
 
     const order = await prisma.order.update({
-      where: { id: Number(req.params.id) },
-      data: { status: req.body.status },
+      where: {
+        id: Number(req.params.id),
+      },
+
+      data: {
+        status: req.body.status,
+      },
+
       include: {
         user: {
           select: {
@@ -295,8 +377,11 @@ const updateOrderStatus = async (req, res, next) => {
             createdAt: true,
           },
         },
+
         items: {
-          include: { product: true },
+          include: {
+            product: true,
+          },
         },
       },
     });

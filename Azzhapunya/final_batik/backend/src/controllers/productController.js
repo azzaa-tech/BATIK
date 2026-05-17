@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
 const prisma = require("../utils/prisma");
+const { db } = require("../config/db");
 
 const normalizeProductPayload = (body) => {
   const payload = { ...body };

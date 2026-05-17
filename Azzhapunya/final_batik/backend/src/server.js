@@ -38,7 +38,7 @@ app.use("/api", authRoutes);
 app.use("/api", productRoutes);
 app.use("/api", cartRoutes);
 app.use("/api", orderRoutes);
-app.use("/api", bookingRoutes);
+app.use("/api/bookings", bookingRoutes)
 
 app.use(errorMiddleware);
 

@@ -1,52 +1,32 @@
 "use client"
 
-import { useState } from "react"
-import { CheckCircle, Clock, ChevronDown, X } from "lucide-react"
-import Sidebar from "../sidebarmin/page"
+import { useEffect, useState } from "react"
+import {
+  CheckCircle,
+  Clock,
+  ChevronDown,
+  X,
+} from "lucide-react"
 
-type BookingStatus = "menunggu" | "konfirmasi" | "ditolak"
+import Sidebar from "../sidebarmin/page"
+import { apiRequest } from "@/lib/api"
+
+type BookingStatus =
+  | "menunggu"
+  | "konfirmasi"
+  | "ditolak"
+  | "pending"
 
 type Booking = {
+  id: number
   nama: string
   tanggal: string
   anggota: number
   status: BookingStatus
   noWa: string
   email: string
-  catatan: string
+  createdAt?: string
 }
-
-type BookingDetail = Booking & { index: number }
-
-const dataAwal: Booking[] = [
-  {
-    nama: "Kelompok SMK 3",
-    tanggal: "20 Mei 2025",
-    anggota: 12,
-    status: "konfirmasi",
-    noWa: "081234567890",
-    email: "smk3@gmail.com",
-    catatan: "Peserta membawa perlengkapan sendiri",
-  },
-  {
-    nama: "Komunitas Budaya",
-    tanggal: "22 Mei 2025",
-    anggota: 8,
-    status: "menunggu",
-    noWa: "082345678901",
-    email: "kombudaya@gmail.com",
-    catatan: "Mohon sediakan tempat yang luas",
-  },
-  {
-    nama: "Rina & Teman",
-    tanggal: "25 Mei 2025",
-    anggota: 4,
-    status: "menunggu",
-    noWa: "083456789012",
-    email: "rina@gmail.com",
-    catatan: "-",
-  },
-]
 
 const statusOptions: BookingStatus[] = [
   "menunggu",
@@ -59,19 +39,28 @@ const StatusBadge = ({
 }: {
   status: BookingStatus
 }) => {
-  const map = {
+  const statusMap = {
     menunggu: {
       bg: "bg-yellow-100",
       text: "text-yellow-700",
       icon: <Clock size={12} />,
       label: "Menunggu",
     },
+
+    pending: {
+      bg: "bg-yellow-100",
+      text: "text-yellow-700",
+      icon: <Clock size={12} />,
+      label: "Menunggu",
+    },
+
     konfirmasi: {
       bg: "bg-green-100",
       text: "text-green-700",
       icon: <CheckCircle size={12} />,
       label: "Dikonfirmasi",
     },
+
     ditolak: {
       bg: "bg-red-100",
       text: "text-red-600",
@@ -80,34 +69,101 @@ const StatusBadge = ({
     },
   }
 
-  const s = map[status]
+  const s = statusMap[status]
 
   return (
     <span
-      className={`inline-flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold whitespace-nowrap ${s.bg} ${s.text}`}
+      className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${s.bg} ${s.text}`}
     >
-      {s.icon} {s.label}
+      {s.icon}
+      {s.label}
     </span>
   )
 }
 
 export default function BookingAdmin() {
-  const [list, setList] = useState<Booking[]>(dataAwal)
-  const [detail, setDetail] = useState<BookingDetail | null>(null)
-  const [dropdown, setDropdown] = useState<number | null>(null)
+  const [list, setList] = useState<Booking[]>([])
+  const [detail, setDetail] =
+    useState<Booking | null>(null)
 
-  const ubahStatus = (
-    i: number,
+  const [dropdown, setDropdown] =
+    useState<number | null>(null)
+
+  const [loading, setLoading] =
+    useState<boolean>(true)
+
+  // =========================
+  // GET ALL BOOKINGS
+  // =========================
+  const fetchBookings = async () => {
+    try {
+      setLoading(true)
+
+      const res = await apiRequest(
+        "/bookings/admin",
+        {
+          method: "GET",
+          auth: true,
+        }
+      )
+
+      console.log(res)
+
+      // FIX ERROR res.data
+      setList(res.data || [])
+    } catch (error) {
+      console.error(error)
+      alert("Gagal mengambil data booking")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchBookings()
+  }, [])
+
+  // =========================
+  // UPDATE STATUS
+  // =========================
+  const ubahStatus = async (
+    id: number,
     status: BookingStatus
   ) => {
-    const baru = [...list]
-    baru[i].status = status
+    try {
+      await apiRequest(
+        `/bookings/${id}/status`,
+        {
+          method: "PUT",
+          auth: true,
+          body: JSON.stringify({
+            status,
+          }),
+        }
+      )
 
-    setList(baru)
-    setDropdown(null)
+      const updated = list.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              status,
+            }
+          : item
+      )
 
-    if (detail && detail.index === i) {
-      setDetail({ ...detail, status })
+      setList(updated)
+
+      if (detail && detail.id === id) {
+        setDetail({
+          ...detail,
+          status,
+        })
+      }
+
+      setDropdown(null)
+    } catch (error) {
+      console.error(error)
+      alert("Gagal mengubah status")
     }
   }
 
@@ -115,206 +171,289 @@ export default function BookingAdmin() {
     <div className="min-h-screen bg-gray-100 font-sans flex">
       <Sidebar />
 
-      <div className="flex-1 md:ml-64 w-full p-3 sm:p-5 md:p-6 overflow-x-hidden">
-        <div className="w-full bg-[#7b1d1d] rounded-2xl px-4 py-4 sm:px-6 sm:py-5 mb-5 sm:mb-6 flex items-start sm:items-center gap-3 sm:gap-4 shadow-md">
-          <span className="text-2xl sm:text-3xl">👋</span>
+      <div className="flex-1 md:ml-64 w-full p-4 md:p-6 overflow-x-hidden">
+        {/* HEADER */}
+        <div className="w-full bg-[#7b1d1d] rounded-2xl px-6 py-5 mb-6 flex items-center gap-4 shadow-md">
+          <span className="text-3xl">👋</span>
 
-          <div className="min-w-0">
-            <h1 className="text-white font-bold text-base sm:text-xl leading-tight">
+          <div>
+            <h1 className="text-white font-bold text-xl">
               Hai, Admin!
             </h1>
 
-            <p className="text-white/70 text-xs sm:text-sm mt-1 leading-relaxed">
-              Selamat bekerja — jangan lupa periksa booking pelatihan hari ini!
+            <p className="text-white/70 text-sm mt-1">
+              Selamat bekerja — jangan lupa
+              periksa booking pelatihan hari
+              ini!
             </p>
           </div>
         </div>
 
+        {/* CARD */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="px-4 sm:px-5 py-4 border-b border-gray-100 flex items-center justify-between gap-3">
-            <h2 className="font-bold text-gray-800 text-sm sm:text-base">
+          <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+            <h2 className="font-bold text-gray-800">
               Booking Pelatihan
             </h2>
 
-            <span className="text-xs text-gray-400 whitespace-nowrap">
+            <span className="text-xs text-gray-400">
               {list.length} booking
             </span>
           </div>
 
-          {/* Desktop Table */}
-          <div className="hidden md:block overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-gray-400 text-left bg-gray-50 border-b border-gray-100">
-                  <th className="px-5 py-3 font-medium">Nama</th>
-                  <th className="px-5 py-3 font-medium">Tanggal</th>
-                  <th className="px-5 py-3 font-medium">Anggota</th>
-                  <th className="px-5 py-3 font-medium">Status</th>
-                  <th className="px-5 py-3 font-medium">Aksi</th>
-                </tr>
-              </thead>
+          {/* LOADING */}
+          {loading ? (
+            <div className="p-10 text-center text-gray-500">
+              Loading...
+            </div>
+          ) : list.length === 0 ? (
+            <div className="p-10 text-center text-gray-500">
+              Belum ada booking
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-gray-400 text-left bg-gray-50 border-b border-gray-100">
+                    <th className="px-5 py-3 font-medium">
+                      Nama
+                    </th>
 
-              <tbody className="divide-y divide-gray-50">
-                {list.map((b, i) => (
-                  <tr
-                    key={i}
-                    className="hover:bg-gray-50 transition-colors"
-                  >
-                    <td className="px-5 py-4">
-                      <button
-                        onClick={() =>
-                          setDetail({ ...b, index: i })
-                        }
-                        className="text-left"
-                      >
-                        <p className="font-semibold text-gray-800 hover:text-[#7b1d1d] transition-colors">
-                          {b.nama}
-                        </p>
+                    <th className="px-5 py-3 font-medium">
+                      Tanggal
+                    </th>
 
-                        <p className="text-xs text-gray-400 mt-0.5">
-                          {b.email}
-                        </p>
-                      </button>
-                    </td>
+                    <th className="px-5 py-3 font-medium">
+                      Anggota
+                    </th>
 
-                    <td className="px-5 py-4 text-gray-600">
-                      📅 {b.tanggal}
-                    </td>
+                    <th className="px-5 py-3 font-medium">
+                      Status
+                    </th>
 
-                    <td className="px-5 py-4 text-gray-600">
-                      👥 {b.anggota} orang
-                    </td>
+                    <th className="px-5 py-3 font-medium">
+                      Aksi
+                    </th>
+                  </tr>
+                </thead>
 
-                    <td className="px-5 py-4">
-                      <StatusBadge status={b.status} />
-                    </td>
+                <tbody className="divide-y divide-gray-50">
+                  {list.map((b, i) => (
+                    <tr
+                      key={b.id}
+                      className="hover:bg-gray-50 transition-colors"
+                    >
+                      {/* NAMA */}
+                      <td className="px-5 py-4">
+                        <button
+                          onClick={() =>
+                            setDetail(b)
+                          }
+                          className="text-left"
+                        >
+                          <p className="font-semibold text-gray-800 hover:text-[#7b1d1d] transition-colors">
+                            {b.nama}
+                          </p>
 
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-2">
+                          <p className="text-xs text-gray-400 mt-1">
+                            {b.email}
+                          </p>
+                        </button>
+                      </td>
+
+                      {/* TANGGAL */}
+                      <td className="px-5 py-4 text-gray-600">
+                        {new Date(
+                          b.tanggal
+                        ).toLocaleDateString(
+                          "id-ID",
+                          {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          }
+                        )}
+                      </td>
+
+                      {/* ANGGOTA */}
+                      <td className="px-5 py-4 text-gray-600">
+                        👥 {b.anggota} orang
+                      </td>
+
+                      {/* STATUS */}
+                      <td className="px-5 py-4">
+                        <StatusBadge
+                          status={b.status}
+                        />
+                      </td>
+
+                      {/* AKSI */}
+                      <td className="px-5 py-4">
                         <div className="relative">
                           <button
                             onClick={() =>
                               setDropdown(
-                                dropdown === i ? null : i
+                                dropdown === i
+                                  ? null
+                                  : i
                               )
                             }
-                            className="flex items-center gap-1 text-xs border border-gray-200 rounded-lg px-3 py-1.5 hover:bg-gray-100 text-gray-600 transition-colors"
+                            className="flex items-center gap-1 text-xs border border-gray-200 rounded-lg px-3 py-1.5 hover:bg-gray-100 text-gray-600 transition"
                           >
-                            Ubah <ChevronDown size={12} />
+                            Ubah{" "}
+                            <ChevronDown
+                              size={12}
+                            />
                           </button>
 
                           {dropdown === i && (
-                            <div className="absolute right-0 top-9 bg-white rounded-xl shadow-lg border border-gray-100 z-20 overflow-hidden min-w-[150px]">
-                              {statusOptions.map((opt) => (
-                                <button
-                                  key={opt}
-                                  onClick={() =>
-                                    ubahStatus(i, opt)
-                                  }
-                                  className={`w-full text-left px-4 py-2.5 text-xs hover:bg-gray-50 flex items-center gap-2 ${
-                                    b.status === opt
-                                      ? "font-bold text-[#7b1d1d]"
-                                      : "text-gray-600"
-                                  }`}
-                                >
-                                  {opt === "menunggu" && "⏳"}
-                                  {opt === "konfirmasi" && "✅"}
-                                  {opt === "ditolak" && "❌"}
-                                  {opt.charAt(0).toUpperCase() +
-                                    opt.slice(1)}
-                                </button>
-                              ))}
+                            <div className="absolute right-0 top-10 bg-white rounded-xl shadow-lg border border-gray-100 z-20 overflow-hidden min-w-[150px]">
+                              {statusOptions.map(
+                                (opt) => (
+                                  <button
+                                    key={opt}
+                                    onClick={() =>
+                                      ubahStatus(
+                                        b.id,
+                                        opt
+                                      )
+                                    }
+                                    className={`w-full text-left px-4 py-2.5 text-xs hover:bg-gray-50 flex items-center gap-2 ${
+                                      b.status ===
+                                      opt
+                                        ? "font-bold text-[#7b1d1d]"
+                                        : "text-gray-600"
+                                    }`}
+                                  >
+                                    {opt ===
+                                      "menunggu" &&
+                                      "⏳"}
+
+                                    {opt ===
+                                      "konfirmasi" &&
+                                      "✅"}
+
+                                    {opt ===
+                                      "ditolak" &&
+                                      "❌"}
+
+                                    {opt}
+                                  </button>
+                                )
+                              )}
                             </div>
                           )}
                         </div>
-
-                        {b.status === "menunggu" && (
-                          <button
-                            onClick={() =>
-                              ubahStatus(i, "konfirmasi")
-                            }
-                            className="text-xs bg-[#7b1d1d] text-white px-3 py-1.5 rounded-lg hover:bg-[#5e1515] transition-colors font-semibold"
-                          >
-                            Konfirmasi
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Modal Detail */}
+      {/* MODAL DETAIL */}
       {detail && (
         <div
-          className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4"
-          onClick={(e) =>
-            e.target === e.currentTarget &&
-            setDetail(null)
-          }
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={(e) => {
+            if (
+              e.target === e.currentTarget
+            ) {
+              setDetail(null)
+            }
+          }}
         >
-          <div className="bg-white w-full sm:max-w-md max-h-[88vh] overflow-y-auto sm:rounded-2xl rounded-t-2xl p-5 sm:p-6 shadow-2xl">
+          <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl">
             <div className="flex items-center justify-between mb-5">
               <h3 className="font-bold text-gray-800 text-base">
                 Detail Booking
               </h3>
 
               <button
-                onClick={() => setDetail(null)}
+                onClick={() =>
+                  setDetail(null)
+                }
                 className="text-gray-400 hover:text-gray-600"
               >
                 <X size={20} />
               </button>
             </div>
 
-            <div className="space-y-3 text-sm">
-              {[
-                { label: "Nama", value: detail.nama },
-                { label: "Tanggal", value: detail.tanggal },
-                {
-                  label: "Jumlah Anggota",
-                  value: `${detail.anggota} orang`,
-                },
-                {
-                  label: "No. WhatsApp",
-                  value: detail.noWa,
-                },
-                { label: "Email", value: detail.email },
-                {
-                  label: "Catatan",
-                  value: detail.catatan,
-                },
-              ].map(({ label, value }) => (
-                <div
-                  key={label}
-                  className="flex justify-between items-start gap-4"
-                >
-                  <span className="text-gray-400 flex-shrink-0 text-xs sm:text-sm">
-                    {label}
-                  </span>
-
-                  <span className="font-semibold text-gray-800 text-right text-xs sm:text-sm break-words max-w-[60%]">
-                    {value}
-                  </span>
-                </div>
-              ))}
-
-              <div className="flex justify-between items-center pt-2 border-t border-gray-100">
-                <span className="text-gray-400 text-xs sm:text-sm">
-                  Status
+            <div className="space-y-4 text-sm">
+              <div>
+                <span className="text-gray-400">
+                  Nama
                 </span>
 
-                <StatusBadge status={detail.status} />
+                <p className="font-semibold">
+                  {detail.nama}
+                </p>
+              </div>
+
+              <div>
+                <span className="text-gray-400">
+                  Tanggal
+                </span>
+
+                <p className="font-semibold">
+                  {new Date(
+                    detail.tanggal
+                  ).toLocaleDateString(
+                    "id-ID",
+                    {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    }
+                  )}
+                </p>
+              </div>
+
+              <div>
+                <span className="text-gray-400">
+                  Jumlah Anggota
+                </span>
+
+                <p className="font-semibold">
+                  {detail.anggota} orang
+                </p>
+              </div>
+
+              <div>
+                <span className="text-gray-400">
+                  No WhatsApp
+                </span>
+
+                <p className="font-semibold">
+                  {detail.noWa}
+                </p>
+              </div>
+
+              <div>
+                <span className="text-gray-400">
+                  Email
+                </span>
+
+                <p className="font-semibold break-all">
+                  {detail.email}
+                </p>
+              </div>
+
+              <div className="pt-2">
+                <StatusBadge
+                  status={detail.status}
+                />
               </div>
             </div>
 
             <button
-              onClick={() => setDetail(null)}
-              className="mt-6 w-full bg-[#7b1d1d] text-white font-bold py-2.5 rounded-xl text-sm hover:bg-[#5e1515] transition-colors"
+              onClick={() =>
+                setDetail(null)
+              }
+              className="mt-6 w-full bg-[#7b1d1d] text-white font-bold py-2.5 rounded-xl text-sm hover:bg-[#5e1515] transition"
             >
               Tutup
             </button>
