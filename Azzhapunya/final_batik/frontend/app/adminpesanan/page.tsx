@@ -22,12 +22,8 @@ type ProductErrors = Partial<{
 }>
 
 export default function ProdukAdmin() {
-<<<<<<< HEAD
 
   const [produk, setProduk] = useState<Product[]>([])
-=======
-  const [produk, setProduk] = useState(dataProduk)
->>>>>>> cbcca701ce283e0e67e94b56139fc102a1fd170b
   const [showForm, setShowForm] = useState(false)
   const [preview, setPreview] = useState<string | null>(null)
 
@@ -61,7 +57,6 @@ export default function ProdukAdmin() {
     setErrors({ ...errors, [key]: "" })
   }
 
-<<<<<<< HEAD
   const handleFoto = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
 
@@ -73,21 +68,13 @@ export default function ProdukAdmin() {
   const handleSimpan = async () => {
 
     const err: ProductErrors = {}
-=======
-  const handleFoto = (e: any) => {
-    const file = e.target.files[0]
-    if (file) setPreview(URL.createObjectURL(file))
-  }
-
-  const handleSimpan = () => {
-    const err: any = {}
->>>>>>> cbcca701ce283e0e67e94b56139fc102a1fd170b
 
     if (!form.nama.trim()) err.nama = "Wajib diisi"
     if (!form.harga.trim()) err.harga = "Wajib diisi"
     if (!form.stok.trim()) err.stok = "Wajib diisi"
 
     setErrors(err)
+
     if (Object.keys(err).length > 0) return
 
     try {
@@ -136,26 +123,30 @@ export default function ProdukAdmin() {
     }
   }
 
-<<<<<<< HEAD
   const format = (harga: number) => "Rp " + harga.toLocaleString("id-ID")
 
   // ================= FORM TAMBAH PRODUK =================
   if (showForm)
-=======
-  if (showForm) {
->>>>>>> cbcca701ce283e0e67e94b56139fc102a1fd170b
     return (
       <div className="min-h-screen bg-gray-100 flex font-sans">
+
+        {/* SIDEBAR */}
         <Sidebar />
 
-        <div className="flex-1 md:ml-64 w-full p-3 sm:p-5 md:p-6 overflow-x-hidden">
-          <div className="max-w-3xl mx-auto bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
-            <h2 className="font-bold text-gray-800 text-base sm:text-lg mb-5 sm:mb-6">
+        {/* CONTENT */}
+        <div className="flex-1 p-6 md:ml-64">
+
+          <div className="max-w-2xl mx-auto bg-white rounded-2xl p-6 shadow-sm">
+
+            <h2 className="font-bold text-gray-800 text-base mb-6">
               Tambah Produk
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
-              <div className="space-y-4">
+            <div className="flex flex-wrap gap-6">
+
+              {/* FORM */}
+              <div className="flex-1 min-w-[220px] space-y-4">
+
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">
                     Nama barang
@@ -166,7 +157,7 @@ export default function ProdukAdmin() {
                     value={form.nama}
                     onChange={set("nama")}
                     placeholder="Masukkan nama barang"
-                    className={`w-full border rounded-lg px-3 py-2.5 text-sm outline-none ${
+                    className={`w-full border rounded-lg px-3 py-2 text-sm outline-none ${
                       errors.nama
                         ? "border-red-400"
                         : "border-gray-300 focus:border-[#7b1d1d]"
@@ -185,14 +176,9 @@ export default function ProdukAdmin() {
                     Harga barang
                   </label>
 
-                  <div
-                    className={`flex border rounded-lg overflow-hidden ${
-                      errors.harga
-                        ? "border-red-400"
-                        : "border-gray-300 focus-within:border-[#7b1d1d]"
-                    }`}
-                  >
-                    <span className="bg-gray-100 px-3 py-2.5 text-sm font-semibold text-gray-600">
+                  <div className="flex border border-gray-300 rounded-lg overflow-hidden focus-within:border-[#7b1d1d]">
+
+                    <span className="bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-600">
                       Rp
                     </span>
 
@@ -201,8 +187,9 @@ export default function ProdukAdmin() {
                       value={form.harga}
                       onChange={set("harga")}
                       placeholder="Masukkan harga"
-                      className="flex-1 min-w-0 px-3 py-2.5 text-sm outline-none"
+                      className="flex-1 px-3 py-2 text-sm outline-none"
                     />
+
                   </div>
 
                   {errors.harga && (
@@ -222,7 +209,7 @@ export default function ProdukAdmin() {
                     value={form.stok}
                     onChange={set("stok")}
                     placeholder="Masukkan jumlah stok"
-                    className={`w-full border rounded-lg px-3 py-2.5 text-sm outline-none ${
+                    className={`w-full border rounded-lg px-3 py-2 text-sm outline-none ${
                       errors.stok
                         ? "border-red-400"
                         : "border-gray-300 focus:border-[#7b1d1d]"
@@ -235,17 +222,21 @@ export default function ProdukAdmin() {
                     </p>
                   )}
                 </div>
+
               </div>
 
-              <div>
+              {/* FOTO */}
+              <div className="flex-1 min-w-[180px]">
+
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
                   Foto produk
                 </label>
 
                 <div
                   onClick={() => inputRef.current?.click()}
-                  className="border-2 border-dashed border-[#7b1d1d]/40 rounded-xl h-48 sm:h-full min-h-48 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-gray-50 transition-colors overflow-hidden"
+                  className="border-2 border-dashed border-[#7b1d1d]/40 rounded-xl h-44 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-gray-50 transition-colors overflow-hidden"
                 >
+
                   {preview ? (
                     <img
                       src={preview}
@@ -254,15 +245,19 @@ export default function ProdukAdmin() {
                     />
                   ) : (
                     <>
-                      <Upload size={32} className="text-[#7b1d1d]/50" />
+                      <Upload
+                        size={32}
+                        className="text-[#7b1d1d]/50"
+                      />
 
-                      <p className="text-xs text-gray-500 text-center px-4 leading-relaxed">
+                      <p className="text-xs text-gray-500 text-center px-4">
                         Klik untuk upload foto
                         <br />
                         atau drag & drop file di sini
                       </p>
                     </>
                   )}
+
                 </div>
 
                 <input
@@ -272,10 +267,14 @@ export default function ProdukAdmin() {
                   onChange={handleFoto}
                   className="hidden"
                 />
+
               </div>
+
             </div>
 
+            {/* DESKRIPSI */}
             <div className="mt-5">
+
               <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Deskripsi
               </label>
@@ -285,75 +284,85 @@ export default function ProdukAdmin() {
                 onChange={set("deskripsi")}
                 placeholder="Masukkan deskripsi barang"
                 rows={4}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-[#7b1d1d] resize-none"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#7b1d1d] resize-none"
               />
+
             </div>
 
-            <div className="flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center gap-3 mt-6">
+            {/* BUTTON */}
+            <div className="flex justify-between items-center mt-6">
+
               <button
                 onClick={() => setShowForm(false)}
-                className="w-full sm:w-auto text-sm text-gray-500 hover:text-gray-700 py-2"
+                className="text-sm text-gray-500 hover:text-gray-700"
               >
                 ← Kembali
               </button>
 
               <button
                 onClick={handleSimpan}
-                className="w-full sm:w-auto bg-[#c8956c] hover:bg-[#b5845a] text-white font-bold px-8 py-2.5 rounded-xl text-sm transition-colors"
+                className="bg-[#c8956c] hover:bg-[#b5845a] text-white font-bold px-8 py-2.5 rounded-xl text-sm transition-colors"
               >
                 {loading ? "Menyimpan..." : "Simpan"}
               </button>
+
             </div>
+
           </div>
+
         </div>
+
       </div>
     )
-  }
 
+  // ================= LIST PRODUK =================
   return (
     <div className="min-h-screen bg-gray-100 flex font-sans">
+
+      {/* SIDEBAR */}
       <Sidebar />
 
-      <div className="flex-1 md:ml-64 w-full p-3 sm:p-5 md:p-6 overflow-x-hidden">
-        <div className="w-full bg-[#7d0000] rounded-2xl px-4 py-4 sm:px-6 sm:py-5 mb-5 sm:mb-6 flex items-start sm:items-center gap-3 sm:gap-4 shadow-md">
-          <span className="text-2xl sm:text-3xl">👋</span>
+      {/* CONTENT */}
+      <div className="flex-1 p-6 md:ml-64">
 
-          <div className="min-w-0">
-            <h1 className="text-white font-bold text-base sm:text-xl leading-tight">
-              Hai, Admin!
+        <div className="flex items-center justify-between mb-6">
+
+          <div>
+            <h1 className="font-bold text-gray-800 text-base">
+              Produk
             </h1>
-            <p className="text-white/70 text-xs sm:text-sm mt-1 leading-relaxed">
-              Selamat bekerja — semoga harimu produktif dan menyenangkan.
+
+            <p className="text-xs text-gray-400">
+              Selamat datang, Admin 👋
             </p>
           </div>
-        </div>
-
-        <div className="flex items-center justify-between gap-3 mb-5 sm:mb-6">
-          <h2 className="font-bold text-gray-800 text-base sm:text-lg">
-            Produk
-          </h2>
 
           <button
             onClick={() => setShowForm(true)}
-            className="bg-[#7b1d1d] hover:bg-[#5e1515] text-white font-bold px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm transition-colors whitespace-nowrap"
+            className="bg-[#7b1d1d] hover:bg-[#5e1515] text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-colors"
           >
             + Tambah Produk
           </button>
+
         </div>
 
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2">
+
           {produk.map((p, i) => (
+
             <div
               key={i}
-              className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-gray-100"
+              className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100"
             >
-              <div className="flex items-start justify-between gap-3 mb-3">
-                <p className="font-bold text-gray-800 text-sm break-words">
+
+              <div className="flex items-start justify-between mb-2">
+
+                <p className="font-bold text-gray-800 text-sm">
                   {p.nama}
                 </p>
 
                 <span
-                  className={`text-xs font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${
+                  className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                     p.stok <= 5
                       ? "bg-red-100 text-red-600"
                       : "bg-green-100 text-green-700"
@@ -361,6 +370,7 @@ export default function ProdukAdmin() {
                 >
                   Stok: {p.stok}
                 </span>
+
               </div>
 
               <p className="text-[#7b1d1d] font-bold text-base mb-1">
@@ -371,22 +381,31 @@ export default function ProdukAdmin() {
                 Terjual: {p.terjual || 0} pcs
               </p>
 
-              <div className="grid grid-cols-2 gap-2">
-                <button className="text-xs border border-gray-200 rounded-lg py-2 hover:bg-gray-50 text-gray-600">
+              <div className="flex gap-2">
+
+                <button className="flex-1 text-xs border border-gray-200 rounded-lg py-2 hover:bg-gray-50 text-gray-600">
                   Edit
                 </button>
 
                 <button
-                  onClick={() => setProduk(produk.filter((_, idx) => idx !== i))}
-                  className="text-xs border border-red-100 rounded-lg py-2 hover:bg-red-50 text-red-500"
+                  onClick={() =>
+                    setProduk(produk.filter((_, idx) => idx !== i))
+                  }
+                  className="flex-1 text-xs border border-red-100 rounded-lg py-2 hover:bg-red-50 text-red-500"
                 >
                   Hapus
                 </button>
+
               </div>
+
             </div>
+
           ))}
+
         </div>
+
       </div>
+
     </div>
   )
 }

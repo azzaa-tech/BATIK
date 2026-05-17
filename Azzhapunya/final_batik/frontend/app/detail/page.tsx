@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { Minus, Plus } from "lucide-react"
-<<<<<<< HEAD
-import Navbar from "../navbar/page"
+import Nav from "../nav/page"
+import Produk from "../produk/page"
 import { useRouter } from "next/navigation"
 import { apiRequest } from "@/lib/api"
 
@@ -15,18 +15,14 @@ type Product = {
   stok: number
   gambar: string
 }
-=======
-import Nav from "../nav/page"
-import Produk from "../produk/page"
->>>>>>> cbcca701ce283e0e67e94b56139fc102a1fd170b
 
 export default function ProductDetail() {
-
   const [qty, setQty] = useState(1)
   const [size, setSize] = useState("")
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+
   const router = useRouter()
 
   useEffect(() => {
@@ -34,10 +30,16 @@ export default function ProductDetail() {
       try {
         const params = new URLSearchParams(window.location.search)
         const productId = params.get("id") || "1"
+
         const response = await apiRequest<Product>(`/products/${productId}`)
+
         setProduct(response.data || null)
       } catch (error) {
-        alert(error instanceof Error ? error.message : "Gagal mengambil detail produk")
+        alert(
+          error instanceof Error
+            ? error.message
+            : "Gagal mengambil detail produk"
+        )
       } finally {
         setLoading(false)
       }
@@ -48,6 +50,7 @@ export default function ProductDetail() {
 
   const addToCart = async () => {
     if (!product) return
+
     if (!size) {
       alert("Pilih ukuran terlebih dahulu")
       return
@@ -55,6 +58,7 @@ export default function ProductDetail() {
 
     try {
       setSaving(true)
+
       await apiRequest("/cart", {
         method: "POST",
         auth: true,
@@ -64,81 +68,54 @@ export default function ProductDetail() {
           size,
         }),
       })
+
+      alert("Produk berhasil ditambahkan ke keranjang")
       router.push("/cart")
     } catch (error) {
-      alert(error instanceof Error ? error.message : "Gagal menambahkan ke keranjang")
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Gagal menambahkan ke keranjang"
+      )
     } finally {
       setSaving(false)
     }
   }
 
+  const format = (n: number) => {
+    return "Rp " + n.toLocaleString("id-ID")
+  }
+
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Memuat produk...</div>
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Memuat produk...
+      </div>
+    )
   }
 
   if (!product) {
-    return <div className="min-h-screen flex items-center justify-center">Produk tidak ditemukan.</div>
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Produk tidak ditemukan.
+      </div>
+    )
   }
 
   return (
     <div>
+      <Nav />
+
       <div className="min-h-screen bg-[#f5f0eb] pb-28 pt-24 sm:pt-28 px-4 sm:px-6 flex justify-center items-start md:items-center">
         
-        <Nav />
-
-<<<<<<< HEAD
-       {/* DETAIL PRODUK */}
-
-      <div className="bg-[#f0e8df] rounded-3xl p-6 max-w-4xl w-full flex flex-col md:flex-row gap-8 shadow-lg">
-
-        {/* GAMBAR */}
-        <img
-          src={product.gambar || "/aset/produk.png"}
-          alt={product.nama}
-          className="w-full md:w-[280px] h-[350px] object-cover rounded-2xl"
-        />
-
-        {/* DETAIL */}
-        <div className="flex-1">
-
-          <h1 className="text-3xl font-bold text-[#2d0000] mb-4">
-            {product.nama}
-          </h1>
-
-          <p className="text-sm text-gray-600 leading-7 mb-6">
-            {product.deskripsi}
-          </p>
-
-          {/* SIZE */}
-          <h2 className="text-sm text-gray-500 mb-3">
-            Pilih Ukuran
-          </h2>
-
-          <div className="flex gap-3 mb-4 flex-wrap">
-
-            {["S", "M", "L", "XL"].map((item, i) => (
-              <button
-                key={i}
-                onClick={() => setSize(item)}
-                className={`px-5 py-2 rounded-full border transition ${
-                  size === item
-                    ? "bg-[#7b1d1d] text-white"
-                    : "bg-white hover:bg-[#7b1d1d] hover:text-white"
-                }`}
-              >
-                {item}
-              </button>
-            ))}
-=======
         {/* DETAIL PRODUK */}
         <div className="bg-[#f0e8df] rounded-3xl p-4 sm:p-6 md:p-8 max-w-4xl w-full flex flex-col md:flex-row gap-6 md:gap-8 shadow-lg">
->>>>>>> cbcca701ce283e0e67e94b56139fc102a1fd170b
 
           {/* GAMBAR */}
           <div className="w-full md:w-[280px] flex-shrink-0">
             <img
-              src="/aset/produk.png"
-              alt="produk"
+              src={product.gambar || "/aset/produk.png"}
+              alt={product.nama}
               className="w-full md:w-[280px] h-[280px] sm:h-[350px] object-cover rounded-2xl"
             />
           </div>
@@ -147,12 +124,15 @@ export default function ProductDetail() {
           <div className="flex-1">
 
             <h1 className="text-2xl sm:text-3xl font-bold text-[#2d0000] mb-4 leading-tight">
-              Blouse Batik 01
+              {product.nama}
             </h1>
 
+            <p className="text-xl font-bold text-[#7b1d1d] mb-4">
+              {format(product.harga)}
+            </p>
+
             <p className="text-sm sm:text-base text-gray-600 leading-7 mb-6">
-              Batik premium khas Sulawesi Selatan dengan desain elegan,
-              nyaman digunakan untuk acara formal maupun casual.
+              {product.deskripsi || "Tidak ada deskripsi"}
             </p>
 
             {/* SIZE */}
@@ -161,7 +141,6 @@ export default function ProductDetail() {
             </h2>
 
             <div className="flex gap-3 mb-4 flex-wrap">
-
               {["S", "M", "L", "XL"].map((item, i) => (
                 <button
                   key={i}
@@ -175,25 +154,12 @@ export default function ProductDetail() {
                   {item}
                 </button>
               ))}
-
             </div>
 
-<<<<<<< HEAD
-            <p className="text-sm text-gray-600">
-              Stok : <b>{product.stok}</b>
-            </p>
-          </div>
-
-          {/* BUTTON */}
-          <button onClick={addToCart} disabled={saving || product.stok === 0} className="bg-[#7b1d1d] text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 disabled:cursor-not-allowed disabled:bg-gray-400">
-            {saving ? "Menyimpan..." : "Add to Cart"}
-          </button>
-
-=======
-            {/* DESKRIPSI UKURAN */}
+            {/* SIZE INFO */}
             {size && (
               <p className="text-sm text-[#7b1d1d] font-semibold mb-6">
-                Ukuran : {size}
+                Ukuran dipilih : {size}
               </p>
             )}
 
@@ -223,23 +189,32 @@ export default function ProductDetail() {
               </div>
 
               <p className="text-sm text-gray-600">
-                Stok : <b>50</b>
+                Stok : <b>{product.stok}</b>
               </p>
             </div>
 
             {/* BUTTON */}
-            <a href='/cart' className="block w-full sm:w-fit">
-              <button className="w-full sm:w-auto bg-[#7b1d1d] text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition">
-                Add to Cart
-              </button>
-            </a>
+            <button
+              onClick={addToCart}
+              disabled={saving || product.stok === 0}
+              className={`w-full sm:w-auto px-6 py-3 rounded-xl font-semibold transition ${
+                product.stok === 0
+                  ? "bg-gray-400 cursor-not-allowed text-white"
+                  : "bg-[#7b1d1d] hover:opacity-90 text-white"
+              }`}
+            >
+              {saving
+                ? "Menyimpan..."
+                : product.stok === 0
+                ? "Stok Habis"
+                : "Add to Cart"}
+            </button>
 
           </div>
->>>>>>> cbcca701ce283e0e67e94b56139fc102a1fd170b
         </div>
       </div>
-      <Produk />
 
+      <Produk />
     </div>
   )
 }

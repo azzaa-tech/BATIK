@@ -5,18 +5,20 @@ import { CheckCircle, Clock, ChevronDown, X } from "lucide-react"
 import Sidebar from "../sidebarmin/page"
 
 type BookingStatus = "menunggu" | "konfirmasi" | "ditolak"
+
 type Booking = {
-    nama: string
-    tanggal: string
-    anggota: number
-    status: BookingStatus
-    noWa: string
-    email: string
-    catatan: string
+  nama: string
+  tanggal: string
+  anggota: number
+  status: BookingStatus
+  noWa: string
+  email: string
+  catatan: string
 }
+
 type BookingDetail = Booking & { index: number }
 
-const dataAwal = [
+const dataAwal: Booking[] = [
   {
     nama: "Kelompok SMK 3",
     tanggal: "20 Mei 2025",
@@ -46,23 +48,17 @@ const dataAwal = [
   },
 ]
 
-const statusOptions: BookingStatus[] = ["menunggu", "konfirmasi", "ditolak"]
+const statusOptions: BookingStatus[] = [
+  "menunggu",
+  "konfirmasi",
+  "ditolak",
+]
 
-<<<<<<< HEAD
-const StatusBadge = ({ status }: { status: BookingStatus }) => {
-    const map = {
-        menunggu: { bg: "bg-yellow-100", text: "text-yellow-700", icon: <Clock size={12} />, label: "Menunggu" },
-        konfirmasi: { bg: "bg-green-100", text: "text-green-700", icon: <CheckCircle size={12} />, label: "Dikonfirmasi" },
-        ditolak: { bg: "bg-red-100", text: "text-red-600", icon: <X size={12} />, label: "Ditolak" },
-    }
-    const s = map[status]
-    return (
-        <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${s.bg} ${s.text}`}>
-            {s.icon} {s.label}
-        </span>
-    )
-=======
-const StatusBadge = ({ status }) => {
+const StatusBadge = ({
+  status,
+}: {
+  status: BookingStatus
+}) => {
   const map = {
     menunggu: {
       bg: "bg-yellow-100",
@@ -93,35 +89,25 @@ const StatusBadge = ({ status }) => {
       {s.icon} {s.label}
     </span>
   )
->>>>>>> cbcca701ce283e0e67e94b56139fc102a1fd170b
 }
 
 export default function BookingAdmin() {
-  const [list, setList] = useState(dataAwal)
-  const [detail, setDetail] = useState(null)
-  const [dropdown, setDropdown] = useState(null)
+  const [list, setList] = useState<Booking[]>(dataAwal)
+  const [detail, setDetail] = useState<BookingDetail | null>(null)
+  const [dropdown, setDropdown] = useState<number | null>(null)
 
-<<<<<<< HEAD
-    const [list, setList] = useState<Booking[]>(dataAwal as Booking[])
-    const [detail, setDetail] = useState<BookingDetail | null>(null)   // booking yang dibuka detail-nya
-    const [dropdown, setDropdown] = useState<number | null>(null)   // index yang buka dropdown status
-
-    const ubahStatus = (i: number, status: BookingStatus) => {
-        const baru = [...list]
-        baru[i].status = status
-        setList(baru)
-        setDropdown(null)
-        if (detail && detail.index === i) setDetail({ ...detail, status })
-=======
-  const ubahStatus = (i, status) => {
+  const ubahStatus = (
+    i: number,
+    status: BookingStatus
+  ) => {
     const baru = [...list]
     baru[i].status = status
+
     setList(baru)
     setDropdown(null)
 
     if (detail && detail.index === i) {
       setDetail({ ...detail, status })
->>>>>>> cbcca701ce283e0e67e94b56139fc102a1fd170b
     }
   }
 
@@ -137,21 +123,19 @@ export default function BookingAdmin() {
             <h1 className="text-white font-bold text-base sm:text-xl leading-tight">
               Hai, Admin!
             </h1>
+
             <p className="text-white/70 text-xs sm:text-sm mt-1 leading-relaxed">
               Selamat bekerja — jangan lupa periksa booking pelatihan hari ini!
             </p>
           </div>
         </div>
 
-<<<<<<< HEAD
-    )
-}
-=======
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="px-4 sm:px-5 py-4 border-b border-gray-100 flex items-center justify-between gap-3">
             <h2 className="font-bold text-gray-800 text-sm sm:text-base">
               Booking Pelatihan
             </h2>
+
             <span className="text-xs text-gray-400 whitespace-nowrap">
               {list.length} booking
             </span>
@@ -172,15 +156,21 @@ export default function BookingAdmin() {
 
               <tbody className="divide-y divide-gray-50">
                 {list.map((b, i) => (
-                  <tr key={i} className="hover:bg-gray-50 transition-colors">
+                  <tr
+                    key={i}
+                    className="hover:bg-gray-50 transition-colors"
+                  >
                     <td className="px-5 py-4">
                       <button
-                        onClick={() => setDetail({ ...b, index: i })}
+                        onClick={() =>
+                          setDetail({ ...b, index: i })
+                        }
                         className="text-left"
                       >
                         <p className="font-semibold text-gray-800 hover:text-[#7b1d1d] transition-colors">
                           {b.nama}
                         </p>
+
                         <p className="text-xs text-gray-400 mt-0.5">
                           {b.email}
                         </p>
@@ -204,7 +194,9 @@ export default function BookingAdmin() {
                         <div className="relative">
                           <button
                             onClick={() =>
-                              setDropdown(dropdown === i ? null : i)
+                              setDropdown(
+                                dropdown === i ? null : i
+                              )
                             }
                             className="flex items-center gap-1 text-xs border border-gray-200 rounded-lg px-3 py-1.5 hover:bg-gray-100 text-gray-600 transition-colors"
                           >
@@ -216,7 +208,9 @@ export default function BookingAdmin() {
                               {statusOptions.map((opt) => (
                                 <button
                                   key={opt}
-                                  onClick={() => ubahStatus(i, opt)}
+                                  onClick={() =>
+                                    ubahStatus(i, opt)
+                                  }
                                   className={`w-full text-left px-4 py-2.5 text-xs hover:bg-gray-50 flex items-center gap-2 ${
                                     b.status === opt
                                       ? "font-bold text-[#7b1d1d]"
@@ -226,7 +220,8 @@ export default function BookingAdmin() {
                                   {opt === "menunggu" && "⏳"}
                                   {opt === "konfirmasi" && "✅"}
                                   {opt === "ditolak" && "❌"}
-                                  {opt.charAt(0).toUpperCase() + opt.slice(1)}
+                                  {opt.charAt(0).toUpperCase() +
+                                    opt.slice(1)}
                                 </button>
                               ))}
                             </div>
@@ -235,7 +230,9 @@ export default function BookingAdmin() {
 
                         {b.status === "menunggu" && (
                           <button
-                            onClick={() => ubahStatus(i, "konfirmasi")}
+                            onClick={() =>
+                              ubahStatus(i, "konfirmasi")
+                            }
                             className="text-xs bg-[#7b1d1d] text-white px-3 py-1.5 rounded-lg hover:bg-[#5e1515] transition-colors font-semibold"
                           >
                             Konfirmasi
@@ -248,83 +245,6 @@ export default function BookingAdmin() {
               </tbody>
             </table>
           </div>
-
-          {/* Mobile Cards */}
-          <div className="md:hidden divide-y divide-gray-100">
-            {list.map((b, i) => (
-              <div key={i} className="p-4 space-y-4">
-                <div className="flex items-start justify-between gap-3">
-                  <button
-                    onClick={() => setDetail({ ...b, index: i })}
-                    className="text-left flex-1 min-w-0"
-                  >
-                    <p className="font-bold text-gray-800 text-sm leading-tight hover:text-[#7b1d1d] transition-colors break-words">
-                      {b.nama}
-                    </p>
-                    <p className="text-xs text-gray-400 mt-1 break-words">
-                      {b.email}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      📅 {b.tanggal}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      👥 {b.anggota} orang
-                    </p>
-                  </button>
-
-                  <StatusBadge status={b.status} />
-                </div>
-
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="relative">
-                    <button
-                      onClick={() => setDropdown(dropdown === i ? null : i)}
-                      className="w-full flex items-center justify-center gap-1 text-xs border border-gray-200 rounded-lg px-3 py-2 hover:bg-gray-100 text-gray-600 transition-colors"
-                    >
-                      Ubah Status <ChevronDown size={12} />
-                    </button>
-
-                    {dropdown === i && (
-                      <div className="absolute left-0 top-10 bg-white rounded-xl shadow-lg border border-gray-100 z-20 overflow-hidden min-w-full">
-                        {statusOptions.map((opt) => (
-                          <button
-                            key={opt}
-                            onClick={() => ubahStatus(i, opt)}
-                            className={`w-full text-left px-4 py-2.5 text-xs hover:bg-gray-50 flex items-center gap-2 ${
-                              b.status === opt
-                                ? "font-bold text-[#7b1d1d]"
-                                : "text-gray-600"
-                            }`}
-                          >
-                            {opt === "menunggu" && "⏳"}
-                            {opt === "konfirmasi" && "✅"}
-                            {opt === "ditolak" && "❌"}
-                            {opt.charAt(0).toUpperCase() + opt.slice(1)}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  <button
-                    onClick={() => setDetail({ ...b, index: i })}
-                    className="w-full text-xs border border-gray-200 text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    Detail
-                  </button>
-
-                  {b.status === "menunggu" && (
-                    <button
-                      onClick={() => ubahStatus(i, "konfirmasi")}
-                      className="col-span-2 text-xs bg-[#7b1d1d] text-white px-3 py-2 rounded-lg hover:bg-[#5e1515] transition-colors font-semibold"
-                    >
-                      Konfirmasi
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 
@@ -332,7 +252,10 @@ export default function BookingAdmin() {
       {detail && (
         <div
           className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4"
-          onClick={(e) => e.target === e.currentTarget && setDetail(null)}
+          onClick={(e) =>
+            e.target === e.currentTarget &&
+            setDetail(null)
+          }
         >
           <div className="bg-white w-full sm:max-w-md max-h-[88vh] overflow-y-auto sm:rounded-2xl rounded-t-2xl p-5 sm:p-6 shadow-2xl">
             <div className="flex items-center justify-between mb-5">
@@ -352,10 +275,19 @@ export default function BookingAdmin() {
               {[
                 { label: "Nama", value: detail.nama },
                 { label: "Tanggal", value: detail.tanggal },
-                { label: "Jumlah Anggota", value: `${detail.anggota} orang` },
-                { label: "No. WhatsApp", value: detail.noWa },
+                {
+                  label: "Jumlah Anggota",
+                  value: `${detail.anggota} orang`,
+                },
+                {
+                  label: "No. WhatsApp",
+                  value: detail.noWa,
+                },
                 { label: "Email", value: detail.email },
-                { label: "Catatan", value: detail.catatan },
+                {
+                  label: "Catatan",
+                  value: detail.catatan,
+                },
               ].map(({ label, value }) => (
                 <div
                   key={label}
@@ -364,6 +296,7 @@ export default function BookingAdmin() {
                   <span className="text-gray-400 flex-shrink-0 text-xs sm:text-sm">
                     {label}
                   </span>
+
                   <span className="font-semibold text-gray-800 text-right text-xs sm:text-sm break-words max-w-[60%]">
                     {value}
                   </span>
@@ -374,6 +307,7 @@ export default function BookingAdmin() {
                 <span className="text-gray-400 text-xs sm:text-sm">
                   Status
                 </span>
+
                 <StatusBadge status={detail.status} />
               </div>
             </div>
@@ -390,4 +324,3 @@ export default function BookingAdmin() {
     </div>
   )
 }
->>>>>>> cbcca701ce283e0e67e94b56139fc102a1fd170b
